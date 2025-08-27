@@ -11,5 +11,6 @@ export GRAMS_PATH=<absolute path>/grams_tof_lib_hyeb/build00
 export LD_LIBRARY_PATH=$GRAMS_PATH/Darwin/lib:${LD_LIBRARY_PATH}
 export ROOT_INCLUDE_PATH=$GRAMS_PATH/Darwin/include:${ROOT_INCLUDE_PATH}
 export DYLD_LIBRARY_PATH=$GRAMS_PATH/Darwin/lib:${DYLD_LIBRARY_PATH}
+- Note that 'Darwin' is created in case of MacOS, 'Linux' is created in case of Linux OS
 
 
