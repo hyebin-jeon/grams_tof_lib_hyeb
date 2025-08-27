@@ -1,6 +1,6 @@
 //#include "TOF_TreeData.h"
 
-gSystem->Load("$GRAMS_LIB_PATH/libGramsTofAnalysisLib.dylib");
+//gSystem->Load("$GRAMS_LIB_PATH/libGramsTofAnalysisLib.dylib");
 
 void channelID_test()
 {

@@ -6,11 +6,10 @@ make -j N
 make install
 
 
-How to use the classes in ROOT:
-Method 1. add a path as env variable
-vi ~/.zshrc
-add the path
-#export DYLD_LIBRARY_PATH=/Users/hyebin/work/grams/software/grams_tof_lib_hyeb/build00/lib:$DYLD_LIBRARY_PATH
+<How to use the classes in ROOT>
+export GRAMS_PATH=<absolute path>/grams_tof_lib_hyeb/build00
+export LD_LIBRARY_PATH=$GRAMS_PATH/Darwin/lib:${LD_LIBRARY_PATH}
+export ROOT_INCLUDE_PATH=$GRAMS_PATH/Darwin/include:${ROOT_INCLUDE_PATH}
+export DYLD_LIBRARY_PATH=$GRAMS_PATH/Darwin/lib:${DYLD_LIBRARY_PATH}
 
-Method 2. Load the lib in your code
-gSystem->Load("absolute_path/build00/lib/libGramsTofAnalysisLib.dylib");
+

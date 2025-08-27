@@ -2,6 +2,17 @@ cmake_minimum_required(VERSION 3.20)
 
 project(grams_tof_lib VERSION 1.0)
 
+## Kim's
+#Changes default install path to be a subdirectory of the build dir.
+#Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
+if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
+  "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+endif()
+###
+
 include(GNUInstallDirs)
 #include(ExternalProject)
 
@@ -14,7 +25,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 
-set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install")
+##set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install")
 
 # RPATH setting (macOS + Linux)
 set(CMAKE_INSTALL_RPATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")

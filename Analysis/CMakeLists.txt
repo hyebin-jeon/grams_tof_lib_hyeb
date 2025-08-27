@@ -1,4 +1,5 @@
 project(GRAMS_TOF_Analysis)
+
 message("${BMagenta}[============ Entering Analysis Subdirectory ============]${ColReset}")
 
 set(GRAMS_TOF_ANALYSIS_FILES
@@ -30,6 +31,7 @@ root_generate_dictionary(
 	GramsTofAnalysisDict 
 	${GRAMS_TOF_ANALYSIS_HEADERS} 
 	LINKDEF TOF_Linkdef.h 
+	MODULE GramsTofAnalysisLib
 )
 
 ## the generated dictionary files
@@ -41,7 +43,7 @@ set(GRAMS_TOF_DICT
 ## Add the generated dictionary *.cxx files to lib
 add_library(GramsTofAnalysisLib SHARED
     ${GRAMS_TOF_ANALYSIS_FILES}
-    ${GRAMS_TOF_ANALYSIS_HEADERS}
+    ${GRAMS_TOF_ANALYSIS_HEADERS}  ### diff
     ${GRAMS_TOF_DICT}
 )
 
@@ -55,41 +57,16 @@ target_link_libraries(GramsTofAnalysisLib PUBLIC ${ROOT_LIBRARIES})
 
 # 라이브러리 설치
 install(TARGETS GramsTofAnalysisLib
-        EXPORT GramsTofAnalysisLibTargets
+        EXPORT GramsTofAnalysisLibTargets ### diff
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
 				PUBLIC_HEADER DESTINATION include
 )
 
-# 헤더 파일 설치
+# header files are copied to include
 install(FILES
-		${GRAMS_TOF_HEADERS}
+		${GRAMS_TOF_ANALYSIS_HEADERS}
     DESTINATION include
 		)
-
-########################################################################################################################
-# Make a lib for all the stuff
-#add_library(HelixAnalysisCalibLib SHARED ${HXA_CALIB_FILES})
-#target_include_directories(HelixAnalysisCalibLib PUBLIC .)
-#target_link_libraries(GramsTofAnalysisLib PUBLIC HelixCommonUtilLib)
-#target_link_libraries(GramsTofAnalysisLib PUBLIC ${ROOT_LIBRARIES})
-
-# Preferred way to make dictionary
-#helix_root_dictionary_builder(
-#        DICT_NAME   GramsTofAnalysisDictGenerated
-#        DEST_TARGET GramsTofAnalysisLib
-#        CLASS_LIST  ${GRAMS_TOF_ANALYSIS_CLASSES}
-#        HEADER_LIST ${GRAMS_TOF_ANALYSIS_HEADERS}
-#        DEPS        HelixCommonUtilLib
-#       #DEPS        HelixGeometryLib HelixCommonUtilLib
-#)
-
-#add_dependencies(HelixAnalysisCalibLib copy-cal-files)
-#add_custom_target(copy-cal-files)
-#add_custom_target(clobber-cal-files) # only for calling by hand
-#add_custom_command(TARGET copy-cal-files    POST_BUILD COMMAND bash -c "cp -rn ${CMAKE_CURRENT_SOURCE_DIR}/calibration_files ${HLX_CONFIG_DIR}" COMMENT "=> Cal files Copied!")
-#add_custom_command(TARGET clobber-cal-files POST_BUILD COMMAND bash -c "cp -r  ${CMAKE_CURRENT_SOURCE_DIR}/calibration_files ${HLX_CONFIG_DIR}" COMMENT "=> Cal files Clobbered!")
-
-########################################################################################################################
 
