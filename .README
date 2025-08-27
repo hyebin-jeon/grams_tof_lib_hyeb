@@ -1,0 +1,16 @@
+
+mkdir build00
+cd build00
+cmake ../.
+make -j N
+make install
+
+
+How to use the classes in ROOT:
+Method 1. add a path as env variable
+vi ~/.zshrc
+add the path
+#export DYLD_LIBRARY_PATH=/Users/hyebin/work/grams/software/grams_tof_lib_hyeb/build00/lib:$DYLD_LIBRARY_PATH
+
+Method 2. Load the lib in your code
+gSystem->Load("absolute_path/build00/lib/libGramsTofAnalysisLib.dylib");
