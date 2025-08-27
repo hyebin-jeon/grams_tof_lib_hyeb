@@ -1,2 +1,0 @@
-/Users/hyebin/work/grams/software/grams_tof_lib_hyeb/install/lib/libGramsTofAnalysisDict_rdict.pcm
-/Users/hyebin/work/grams/software/grams_tof_lib_hyeb/install/lib/libGramsTofAnalysisDict.rootmap
