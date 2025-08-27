@@ -37,33 +37,36 @@ set(GRAMS_TOF_DICT
     ${CMAKE_CURRENT_BINARY_DIR}/GramsTofAnalysisDict.cxx
 )
 
+## Build a shared lib
 ## Add the generated dictionary *.cxx files to lib
 add_library(GramsTofAnalysisLib SHARED
     ${GRAMS_TOF_ANALYSIS_FILES}
     ${GRAMS_TOF_ANALYSIS_HEADERS}
     ${GRAMS_TOF_DICT}
-#${CMAKE_CURRENT_BINARY_DIR}/GramsTofAnalysisDict.cxx
 )
-
-# 라이브러리 설치
-install(TARGETS GramsTofAnalysisLib
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-)
-
-# 헤더 설치: build/include -> install/include
-install(FILES ${GRAMS_TOF_HEADERS} DESTINATION include)
-
-
 
 
 target_include_directories(GramsTofAnalysisLib PUBLIC . ${ROOT_INCLUDE_DIRS})
 target_link_libraries(GramsTofAnalysisLib PUBLIC ${ROOT_LIBRARIES})
 
 # 빌드 순서 보장: dictionary 먼저 생성
-add_dependencies(GramsTofAnalysisLib GramsTofAnalysisDict)
+#add_dependencies(GramsTofAnalysisLib GramsTofAnalysisDict)
 
+
+# 라이브러리 설치
+install(TARGETS GramsTofAnalysisLib
+        EXPORT GramsTofAnalysisLibTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+				PUBLIC_HEADER DESTINATION include
+)
+
+# 헤더 파일 설치
+install(FILES
+		${GRAMS_TOF_HEADERS}
+    DESTINATION include
+		)
 
 ########################################################################################################################
 # Make a lib for all the stuff
