@@ -3,7 +3,9 @@
 #ifndef _TOF_STRUCT_
 #define _TOF_STRUCT_
 
-class TOF_Struct
+#include "TObject.h"
+
+class TOF_Struct : public TObject
 {
   public:
     inline static TOF_Struct * theTofStr{nullptr}; 
