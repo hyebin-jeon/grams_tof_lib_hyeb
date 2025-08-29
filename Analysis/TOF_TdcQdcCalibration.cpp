@@ -46,6 +46,10 @@ void TOF_TdcQdcCalibration::initializeParams()
 void TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
 {
   std::ifstream finT( fname );
+	if( ! finT.is_open() ) {
+		std::cout<< Form( "[ERR] TDC calibration file does not exist.Exit(): %s", fname ) << std::endl;
+		return;
+	}
   unsigned short portID, slaveID, chipID, channelID, tacID;
   char branch;
   double t0, a0, a1, a2;
@@ -73,6 +77,7 @@ void TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
       A1[chipID][channelID][tacID][1] = a1;
       A2[chipID][channelID][tacID][1] = a2;
     }
+		//std::cout << "[TDC calib] T0: " << t0 << std::endl;
     ndata++;
   } while( 1 );
   std::cout << Form( "TDC Calibration Data %d lines", ndata ) << std::endl;
@@ -81,10 +86,15 @@ void TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
 void TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
 {
   std::ifstream finQ( fname );
+	if( ! finQ.is_open() ) {
+		std::cout<< Form( "[ERR] TDC calibration file does not exist.Exit(): %s", fname ) << std::endl;
+		return;
+	}
   unsigned short portID, slaveID, chipID, channelID, tacID;
   double p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
   TString head;
   char buf[256];
+  unsigned short ndata = 0;
   do {
     finQ >> head;
     if ( head.Contains( '#' ) ) {
@@ -104,7 +114,10 @@ void TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
     P7[chipID][channelID][tacID] = p7;
     P8[chipID][channelID][tacID] = p8;
     P9[chipID][channelID][tacID] = p9;
+		//std::cout << "[QDC calib] P0: " << p0 << std::endl;
+		ndata++;
   } while( 1 );
+  std::cout << Form( "QDC Calibration Data %d lines", ndata ) << std::endl;
 }
 
 void TOF_TdcQdcCalibration::readCalibrationFiles( const char* fTdcCalib, const char* fQdcCalib )
@@ -116,7 +129,7 @@ void TOF_TdcQdcCalibration::readCalibrationFiles( const char* fTdcCalib, const c
 
 /// T branch
 //double TOF_TdcQdcCalibration::getTime( TOF_TdcQdcCalibration *calp, unsigned int cid, unsigned short tid, long long fid, unsigned short tcoarse, unsigned short tfine )
-double TOF_TdcQdcCalibration::getTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine )
+double TOF_TdcQdcCalibration::getCalibratedTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine )
 {
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );
@@ -133,7 +146,7 @@ double TOF_TdcQdcCalibration::getTime_T( uint32_t absChannelID, uint8_t tacID, l
 
 /// E branch
 /// this function for E branch is valid when ToT mode
-double TOF_TdcQdcCalibration::getTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine )
+double TOF_TdcQdcCalibration::getCalibratedTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine )
 {
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );
@@ -149,7 +162,7 @@ double TOF_TdcQdcCalibration::getTime_E( uint32_t absChannelID, uint8_t tacID, l
 }
 
 //double getEnergy( TOF_TdcQdcCalibration *calp, unsigned int cid, unsigned short tid, long long fid, unsigned short ecoarse, unsigned short efine, double time )
-double TOF_TdcQdcCalibration::getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
+double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
 {
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );

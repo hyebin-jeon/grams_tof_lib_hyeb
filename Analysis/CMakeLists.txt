@@ -7,6 +7,7 @@ set(GRAMS_TOF_ANALYSIS_FILES
 	TOF_TdcQdcCalibration.cpp
 	TOF_TreeData.cpp
 	TOF_Attributes.cpp
+	TOF_Fitting.cpp
 )
 
 set(GRAMS_TOF_ANALYSIS_CLASSES
@@ -15,6 +16,7 @@ set(GRAMS_TOF_ANALYSIS_CLASSES
 	TOF_TreeData
 	TOF_Struct
 	TOF_Attributes
+	TOF_Fitting
 )
 
 set(GRAMS_TOF_ANALYSIS_HEADERS
@@ -24,6 +26,7 @@ set(GRAMS_TOF_ANALYSIS_HEADERS
 	TOF_Constants.h
 	TOF_Struct.h
 	TOF_Attributes.h
+	TOF_Fitting.h
 )
 
 # ROOT dictionary

@@ -1,4 +1,6 @@
 
+/// febD_connID = 1 to 8
+/// febS_connID = 1 to 128
 void channelConv( uint8_t febD_connID, uint8_t febS_connID ) ;
 
 auto theChanConv = TOF_ChannelConversion::getInstance();
@@ -7,10 +9,10 @@ void channelID_test()
 {
 	uint8_t test = -1;
 	cout << test << endl;
-	channelConv( 1, 1 );
-	channelConv( 1, 2 );
-	channelConv( 1, 65 );
-	channelConv( 1, 66 );
+	channelConv( 2, 1 );
+	channelConv( 2, 2 );
+	channelConv( 2, 65 );
+	channelConv( 2, 66 );
 }
 
 

@@ -63,16 +63,16 @@ class TOF_TdcQdcCalibration : public TObject
 
 
 	public:
-		double getTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine );
-    double getTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine );
-    double getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time );
+		double getCalibratedTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine );
+    double getCalibratedTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine );
+    double getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time ); // was getEnergy().
     
-		double getTime( TOF_Mode branchMode, uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short coarse, unsigned short fine )
+		double getCalibratedTime( TOF_Mode branchMode, uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short coarse, unsigned short fine )
 		{
 			if( branchMode == TOF_Mode::fQdc )
-				return getTime_T(absChannelID, tacID, frameID, coarse, fine );
+				return getCalibratedTime_T(absChannelID, tacID, frameID, coarse, fine );
 			else if ( branchMode == TOF_Mode::fTot )
-			  return getTime_E(absChannelID, tacID, frameID, coarse, fine );
+			  return getCalibratedTime_E(absChannelID, tacID, frameID, coarse, fine );
 			else 
 			{
 				//cout << "ERROR" << endl;
