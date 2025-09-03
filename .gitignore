@@ -20,5 +20,5 @@ CMakeUserPresets.json
 /build*/
 /install/
 /Common*/
-/macro/
+#/macro/
 /calibration/
