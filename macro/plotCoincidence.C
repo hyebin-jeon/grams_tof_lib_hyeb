@@ -198,7 +198,7 @@ void plotCoincidence( uint8_t febD_connID = 3 )
 			//double dT = ((etime[0]-etime[2]) + (etime[1]-etime[3]))/2.0;
 			h_dT->Fill( dT );
 		}
-		//if( i>100 ) break;
+		if( i>100 ) break;
 	}
 
 	/// Individual channels' time and qdc
