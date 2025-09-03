@@ -5,7 +5,7 @@ ClassImp( TOF_Attributes );
 ///////////////////////////////////////////////////////////////////////////////
 /// Graph Attrib
 ///////////////////////////////////////////////////////////////////////////////
-void TOF_Attributes::AttribGraph( TGraph* g, int color, int marker, int lineSty, double alpha, int lineW )
+void TOF_Attributes::attribGraph( TGraph* g, int color, int marker, int lineSty, double alpha, int lineW )
 {
 	g->SetMarkerColorAlpha(color, alpha);
 	g->SetMarkerStyle(marker);
@@ -14,7 +14,7 @@ void TOF_Attributes::AttribGraph( TGraph* g, int color, int marker, int lineSty,
 	g->SetLineColorAlpha(color, alpha);
 	g->GetYaxis()->SetTitleOffset(1.3);
 }
-void TOF_Attributes::AttribGraph( TGraph* g )
+void TOF_Attributes::attribGraph( TGraph* g )
 {
 	int    color   = fPrettyGreen;
 	double alpha   = fPrettyAlpha_graph;
@@ -33,7 +33,7 @@ void TOF_Attributes::AttribGraph( TGraph* g )
 ///////////////////////////////////////////////////////////////////////////////
 /// Hist Attrib
 ///////////////////////////////////////////////////////////////////////////////
-void TOF_Attributes::AttribHist( TH1* hist, int color, double alpha, int fill )
+void TOF_Attributes::attribHist( TH1* hist, int color, double alpha, int fill )
 {
   hist->SetMarkerStyle( 24 );
   hist->SetMarkerSize ( 0.6 );
@@ -45,22 +45,22 @@ void TOF_Attributes::AttribHist( TH1* hist, int color, double alpha, int fill )
 	hist->GetYaxis()->SetTitleOffset(1.3);
 }
 
-void TOF_Attributes::AttribHist( TH1* hist )
+void TOF_Attributes::attribHist( TH1* hist )
 {
 	int    color = fPrettyGreen;
 	double alpha = fPrettyAlpha_hist;
-	int fill = fFillSolid;
+	int    fill  = fFillSolid;
   hist->SetMarkerStyle( 24 );
   hist->SetMarkerSize ( 0.6 );
   hist->SetMarkerColor( color );
   hist->SetLineColor( color );
   hist->SetFillStyle( fill ); 
-  hist->SetFillColorAlpha( color, alpha);
+  hist->SetFillColorAlpha( color, alpha );
 	
 	hist->GetYaxis()->SetTitleOffset(1.3);
 }
 
-void TOF_Attributes::AttribTH2( TH2* hist, int color, int fill )
+void TOF_Attributes::attribTH2( TH2* hist, int color, int fill )
 {
 	hist->GetYaxis()->SetTitleOffset(1.3);
   hist->SetLineColor( color );
@@ -71,7 +71,7 @@ void TOF_Attributes::AttribTH2( TH2* hist, int color, int fill )
 	hist->GetYaxis()->SetTitleOffset(1.3);
 }
 
-void TOF_Attributes::AttribProf( TProfile* prof, int color )
+void TOF_Attributes::attribProf( TProfile* prof, int color )
 {
 	if( color>=0 ) {
 	prof->SetLineColor( color );
@@ -106,7 +106,7 @@ void TOF_Attributes::setTimeXaxis( TMultiGraph* g, double tmin, double tmax )
 
 	g->GetXaxis()->SetRangeUser( tmin, tmax );
 }
-void TOF_Attributes::AttribYaxis( TMultiGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax )
+void TOF_Attributes::attribYaxis( TMultiGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax )
 {
   g->GetYaxis()->SetLabelSize  (labelSize  );
   g->GetYaxis()->SetTitleOffset(titleOffset);
@@ -119,7 +119,7 @@ void TOF_Attributes::AttribYaxis( TMultiGraph* g, double labelSize, double title
 
 	return;
 }
-void TOF_Attributes::AttribYaxis( TGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax )
+void TOF_Attributes::attribYaxis( TGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax )
 {
   g->GetYaxis()->SetLabelSize  (labelSize  );
   g->GetYaxis()->SetTitleOffset(titleOffset);
@@ -137,7 +137,7 @@ void TOF_Attributes::AttribYaxis( TGraph* g, double labelSize, double titleOffse
 ///////////////////////////////////////////////////////////////////////////////
 /// StatBox Attrib
 ///////////////////////////////////////////////////////////////////////////////
-void TOF_Attributes::MoveStatBox( TPaveStats* ps, double x0, double y0, double x1, double y1 )
+void TOF_Attributes::moveStatBox( TPaveStats* ps, double x0, double y0, double x1, double y1 )
 {
 	if( x0<1 && y0<1 && x1<1 && y1<1 && x0>0 && y0>0 && x1>0 && y1>0 )
 	{
@@ -156,7 +156,7 @@ void TOF_Attributes::MoveStatBox( TPaveStats* ps, double x0, double y0, double x
 	return;
 }
 
-int TOF_Attributes::MoveStatBoxNDC( TPaveStats* ps, double x0, double y0, double x1, double y1 )
+int TOF_Attributes::moveStatBoxNDC( TPaveStats* ps, double x0, double y0, double x1, double y1 )
 {
 	if( x0<1 && x0>0 ) ps->SetX1NDC( x0 );
 	else return TOF_ERR_OUT_OF_RANGE;
@@ -179,7 +179,8 @@ int TOF_Attributes::MoveStatBoxNDC( TPaveStats* ps, double x0, double y0, double
 ///////////////////////////////////////////////////////////////////////////////
 /// Set colors of TLegend entry colors
 /// colorOpt = "marker", "line", or "fill"
-void TOF_Attributes::SetAttribLegendEntries(TLegend *leg, std::string colorOpt){
+void TOF_Attributes::setAttribLegendEntries(TLegend *leg, std::string colorOpt)
+{
   if(!leg) return;
 	TList* l = leg->GetListOfPrimitives();
 	TIter next( (TCollection*) l);
@@ -215,7 +216,7 @@ void TOF_Attributes::SetAttribLegendEntries(TLegend *leg, std::string colorOpt){
 	}
 }
     
-void TOF_Attributes::SetAttribLegend(TLegend *leg, double marginSize, double textSize, int fontType) 
+void TOF_Attributes::setAttribLegend(TLegend *leg, double marginSize, double textSize, int fontType) 
 {
 	if(!leg) return;
   leg->SetFillStyle (0);
@@ -228,7 +229,7 @@ void TOF_Attributes::SetAttribLegend(TLegend *leg, double marginSize, double tex
 ///////////////////////////////////////////////////////////////////////////////
 /// TText Attrib
 ///////////////////////////////////////////////////////////////////////////////
-void DrawText( double size, int align, int color, double x0, double y0, const char* tt)
+void TOF_Attributes::drawText( double size, int align, int color, double x0, double y0, const char* tt)
 {
 	TLatex kTEXT;
 	kTEXT.SetTextSize( size );
@@ -236,7 +237,7 @@ void DrawText( double size, int align, int color, double x0, double y0, const ch
 	kTEXT.SetTextAlign( align );
 	kTEXT.DrawText( x0, y0, tt );
 }
-void DrawTextNDC( double size, int align, int color, double x0, double y0, const char* tt)
+void TOF_Attributes::drawTextNDC( double size, int align, int color, double x0, double y0, const char* tt)
 {
 	TLatex kTEXT;
 	kTEXT.SetTextSize( size );
@@ -244,7 +245,7 @@ void DrawTextNDC( double size, int align, int color, double x0, double y0, const
 	kTEXT.SetTextAlign( align );
 	kTEXT.DrawTextNDC( x0, y0, tt );
 }
-void DrawText( double size, int align, int color, int font, double x0, double y0, const char* tt)
+void TOF_Attributes::drawText( double size, int align, int color, int font, double x0, double y0, const char* tt)
 {
 	TLatex kTEXT;
 	kTEXT.SetTextSize( size );
@@ -253,7 +254,7 @@ void DrawText( double size, int align, int color, int font, double x0, double y0
 	kTEXT.SetTextFont ( font );
 	kTEXT.DrawLatexNDC( x0, y0, tt );
 }
-void DrawTextNDC( double size, int align, int color, int font, double x0, double y0, const char* tt)
+void TOF_Attributes::drawTextNDC( double size, int align, int color, int font, double x0, double y0, const char* tt)
 {
 	TLatex kTEXT;
 	kTEXT.SetTextSize( size );

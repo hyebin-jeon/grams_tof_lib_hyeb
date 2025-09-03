@@ -1,5 +1,5 @@
 
-#include <fstream>
+//#include <fstream>
 #include "TOF_TdcQdcCalibration.h"
 
 ClassImp( TOF_TdcQdcCalibration );
@@ -188,6 +188,8 @@ double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t t
   float t_eq = ti;
   float delta = 0;
   int iter = 0;
+
+	std::cout << "timeEnd: " << timeEnd << ", ti: " << ti << std::endl;
 
   do {
     float f = (p0 - efine) +

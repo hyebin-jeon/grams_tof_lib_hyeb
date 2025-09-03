@@ -38,32 +38,32 @@ class TOF_Attributes : public TObject
     static constexpr int    fPrettyGreen = 30 ;
     static constexpr double fPrettyAlpha_hist  = 0.3;
     static constexpr double fPrettyAlpha_graph = 0.6;
-		static constexpr int    fFillSolid = 1000;
+		static constexpr int    fFillSolid = 1001;
 		static constexpr int    fFillHollow = 0;
 
 	public:
     /// Graph
-    void AttribGraph( TGraph* g );
-    void AttribGraph( TGraph* g, int color, int marker, int line=1, double alpha=0.6, int lineW=1 );
+    void attribGraph( TGraph* g );
+    void attribGraph( TGraph* g, int color, int marker, int line=1, double alpha=0.6, int lineW=1 );
 
 		/// Histogram
-    void AttribHist( TH1* hist );
-    void AttribHist( TH1* hist, int color, double alpha, int fill=fFillSolid );
-    void AttribTH2 ( TH2* hist, int color, int fill=fFillSolid );
-    void AttribProf( TProfile* prof, int color );
+    void attribHist( TH1* hist );
+    void attribHist( TH1* hist, int color, double alpha, int fill=fFillSolid );
+    void attribTH2 ( TH2* hist, int color, int fill=fFillSolid );
+    void attribProf( TProfile* prof, int color );
     
-    void MoveStatBox   ( TPaveStats* ps, double x0, double y0, double x1, double y1 );
-    int  MoveStatBoxNDC( TPaveStats* ps, double x0, double y0, double x1, double y1 );
+    void moveStatBox   ( TPaveStats* ps, double x0, double y0, double x1, double y1 );
+    int  moveStatBoxNDC( TPaveStats* ps, double x0, double y0, double x1, double y1 );
 
     /// TLegend
-    void SetAttribLegendEntries(TLegend *leg, std::string colorOpt);
-    void SetAttribLegend(TLegend *leg, double marginSize, double textSize, int fontType); 
+    void setAttribLegendEntries(TLegend *leg, std::string colorOpt);
+    void setAttribLegend(TLegend *leg, double marginSize, double textSize, int fontType); 
 
 
-    void DrawText   ( double size, int align, int color, double x0, double y0, const char* tt);
-    void DrawTextNDC( double size, int align, int color, double x0, double y0, const char* tt);
-    void DrawText   ( double size, int align, int color, int font, double x0, double y0, const char* tt);
-    void DrawTextNDC( double size, int align, int color, int font, double x0, double y0, const char* tt);
+    void drawText   ( double size, int align, int color, double x0, double y0, const char* tt);
+    void drawTextNDC( double size, int align, int color, double x0, double y0, const char* tt);
+    void drawText   ( double size, int align, int color, int font, double x0, double y0, const char* tt);
+    void drawTextNDC( double size, int align, int color, int font, double x0, double y0, const char* tt);
 
     /// Axis with time label
     void setTimeXaxis( TGraph* g, bool kUTC=false );
@@ -72,8 +72,8 @@ class TOF_Attributes : public TObject
 
     /// Axis
     //void AttribGraphAxis( TGraph* g );
-    void AttribYaxis( TGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax );
-    void AttribYaxis( TMultiGraph* g, double labelSize, double titleOffset, double titleSize, double ymin=0, double ymax=0 );
+    void attribYaxis( TGraph* g, double labelSize, double titleOffset, double titleSize, double ymin, double ymax );
+    void attribYaxis( TMultiGraph* g, double labelSize, double titleOffset, double titleSize, double ymin=0, double ymax=0 );
 	
   ClassDef(TOF_Attributes, 1)
 };
