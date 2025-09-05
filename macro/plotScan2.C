@@ -113,17 +113,32 @@ void plotScan2()
 		}
 	}
 
-	TH2D* hScan[4];
+	TH2D* hScan_entr[chanN];
+	TH2D* hScan_mean[chanN];
+	TGraphErrors* gErr_entr[chanN][param1_nb];
+	TGraphErrors* gErr_mean[chanN][param1_nb];
+	TMultiGraph* gEntr[chanN];
+	TMultiGraph* gMean[chanN];
+	//std::vector<std::tuple<int, int, TGraphErrors*>> vGrErr_entr; // x axis = param0, y axis = entries for (channel, param1)
+	//std::vector<std::tuple<int, int, TGraphErrors*>> vGrErr_mean; // x axis = param0, y axis = entries for (channel, param1)
 	for( int ch=0; ch<chanN; ch++ )
 	{
-		hScan[ch] = new TH2D( Form("hScan_ch%03d", activeAbsChanID[ch]), "", param0_nb, 0, param0_nb, param1_nb, 0, param1_nb );
+		auto chanID = activeAbsChanID[ch];
+		hScan_entr[ch] = new TH2D( Form("hScan_entr_ch%03d" , chanID), "", param0_nb, 0, param0_nb, param1_nb, 0, param1_nb );
+		hScan_mean[ch] = new TH2D( Form("hScan_mean_ch%03d", chanID), "", param0_nb, 0, param0_nb, param1_nb, 0, param1_nb );
 
-	  TCanvas* c1 = new TCanvas( Form("c1_ch%03d",activeAbsChanID[ch]), "", 1400, 1200);
+	  TCanvas* c1 = new TCanvas( Form("c1_ch%03d", chanID), "", 1400, 1200);
 	  c1->Divide( param0_nb, param1_nb, 0.002, 0.002 );
-	  std::vector<std::tuple<int, int, int, int>> vEntries;
-	  for( int pidx0=0; pidx0<param0_nb; pidx0++ )
+	  //std::vector<std::tuple<int, int, int, int>> vEntries;
+	  for( int pidx1=0; pidx1<param1_nb; pidx1++ )
 	  {
-	    for( int pidx1=0; pidx1<param1_nb; pidx1++ )
+			gErr_entr[ch][pidx1] = new TGraphErrors();
+			gErr_entr[ch][pidx1]->SetName( Form("gEntr_ch%03d_%s_%.0f", chanID, param1_name.Data(), params1[pidx1]) );
+				
+			gErr_mean[ch][pidx1] = new TGraphErrors();
+			gErr_mean[ch][pidx1]->SetName( Form("gMean_ch%03d_%s_%.0f", chanID, param1_name.Data(), params1[pidx1]) );
+
+	    for( int pidx0=0; pidx0<param0_nb; pidx0++ )
 	  	{
 	  		int canvIdx = pidx1*param0_nb + pidx0 + 1;
 	  		
@@ -138,11 +153,19 @@ void plotScan2()
 	  		auto ps = (TPaveStats*) gPad->GetPrimitive("stats");
 	  		theAttrib->moveStatBox( ps, 0.6, 0.65, 0.95, 0.89 );
 
-	  		int counts = hQ[ch][pidx0][pidx1]->GetEntries();
-	  		vEntries.push_back( std::make_tuple(ch, pidx0, pidx1, counts) );
+	  		auto counts = hQ[ch][pidx0][pidx1]->GetEntries();
+				auto mean   = hQ[ch][pidx0][pidx1]->GetMean(); 
+	  		//vEntries.push_back( std::make_tuple(ch, pidx0, pidx1, counts) );
 
-				hScan[ch]->Fill( Form("%.0f", params0[pidx0]), Form("%.0f", params1[pidx1]), counts );
+				hScan_entr[ch]->Fill( Form("%.0f", params0[pidx0]), Form("%.0f", params1[pidx1]), counts );
+				hScan_mean[ch]->Fill( Form("%.0f", params0[pidx0]), Form("%.0f", params1[pidx1]), mean   );
+
+				gErr_entr[ch][pidx1]->SetPoint( pidx0, params0[pidx0], counts );
+				gErr_mean[ch][pidx1]->SetPoint( pidx0, params0[pidx0], mean );
 			}
+
+			gEntr[ch]->Add( gErr_entr[ch][pidx1] );
+			gMean[ch]->Add( gErr_mean[ch][pidx1] );
 		}
 
 		c1->Modified();
@@ -152,17 +175,23 @@ void plotScan2()
 
 
 	gStyle->SetOptStat(0);
+	//gStyle->SetPalette(kLightTemperature);
 	TCanvas* c2 = new TCanvas("c2", "c2", 550, 500 );
 	for( int i=0; i<chanN; i++ ) {
-		c2->SetName( Form("hScan_ch%03d", activeAbsChanID[i]) );
-		hScan[i]->SetTitle( Form(";%s;%s",param0_name.Data(), param1_name.Data()) );
-		hScan[i]->GetZaxis()->SetLabelSize(0.02);
-	  gStyle->SetPalette(kLightTemperature);
-		hScan[i]->Draw("colz");
-		hScan[i]->Write();
+		c2->SetName( Form("hScan_entr_ch%03d", activeAbsChanID[i]) );
+		hScan_entr[i]->SetTitle( Form("Entries;%s;%s",param0_name.Data(), param1_name.Data()) );
+		hScan_entr[i]->GetZaxis()->SetLabelSize(0.02);
+		hScan_entr[i]->Draw("colz");
+		hScan_entr[i]->Write();
 		//c2->Write();
+		
+		hScan_mean[i]->SetTitle( Form("Mean;%s;%s",param0_name.Data(), param1_name.Data()) );
+		hScan_mean[i]->GetZaxis()->SetLabelSize(0.02);
+		hScan_mean[i]->Draw("colz");
+		hScan_mean[i]->Write();
 	}
 
+	TCanvas* c3 = new TCanvas("c3", "c3", 1000, 900 );
 
 	/*
 	TGraph* gCh[4];
