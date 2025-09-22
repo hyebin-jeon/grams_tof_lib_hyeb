@@ -12,5 +12,10 @@ enum class TOF_Mode {
   fTot = 1,
 };
 
+enum class TOF_Branch {
+  fBranchT = 0,
+  fBranchE = 1,
+};
+
 #define TOF_ERR_OUT_OF_RANGE -1
 
