@@ -43,12 +43,12 @@ void TOF_TdcQdcCalibration::initializeParams()
 	return;
 }
 
-void TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
+int TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
 {
   std::ifstream finT( fname );
 	if( ! finT.is_open() ) {
 		std::cout<< Form( "[ERR] TDC calibration file does not exist.Exit(): %s", fname ) << std::endl;
-		return;
+		return TOF_ERR_OUT_OF_RANGE;
 	}
   unsigned short portID, slaveID, chipID, channelID, tacID;
   char branch;
@@ -81,14 +81,16 @@ void TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
     ndata++;
   } while( 1 );
   std::cout << Form( "TDC Calibration Data %d lines", ndata ) << std::endl;
+
+	return 1;
 }
 
-void TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
+int TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
 {
   std::ifstream finQ( fname );
 	if( ! finQ.is_open() ) {
-		std::cout<< Form( "[ERR] TDC calibration file does not exist.Exit(): %s", fname ) << std::endl;
-		return;
+		std::cout<< Form( "[ERR] QDC calibration file does not exist.Exit(): %s", fname ) << std::endl;
+		return TOF_ERR_OUT_OF_RANGE;
 	}
   unsigned short portID, slaveID, chipID, channelID, tacID;
   double p0, p1, p2, p3, p4, p5, p6, p7, p8, p9;
@@ -118,13 +120,79 @@ void TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
 		ndata++;
   } while( 1 );
   std::cout << Form( "QDC Calibration Data %d lines", ndata ) << std::endl;
+
+	return 1;
 }
 
-void TOF_TdcQdcCalibration::readCalibrationFiles( const char* fTdcCalib, const char* fQdcCalib )
+int TOF_TdcQdcCalibration::readCalibrationFiles( const char* fTdcCalib, const char* fQdcCalib )
 {
-	readTdcCalib( fTdcCalib );
-	readQdcCalib( fQdcCalib );
+	auto tdc = readTdcCalib( fTdcCalib );
+	auto qdc = readQdcCalib( fQdcCalib );
+	if( tdc<0 || qdc<0 ) return TOF_ERR_OUT_OF_RANGE;
+	return 1;
+}
+
+int TOF_TdcQdcCalibration::readCalibrationFiles( const char* dirPath )
+{
+	const char* tdc_calib = Form( "%s/tdc_calibration.tsv", dirPath );
+	const char* qdc_calib = Form( "%s/qdc_calibration.tsv", dirPath );
+	auto ok = readCalibrationFiles( tdc_calib, qdc_calib );
+
+	return ok;
+}
+
+//std::vector<double> TOF_TdcQdcCalibration::getQdcParams( int32_t absChannelID, uint8_t tacID )
+std::vector<double> TOF_TdcQdcCalibration::getQdcParams( uint32_t absChannelID, uint8_t tacID )
+{
+	auto chipID    = getChipID   ( absChannelID );
+	auto channelID = getChannelID( absChannelID );
+
+	std::vector<double> rval;
+
+	rval.push_back( getP0( chipID, channelID, tacID ) );
+	rval.push_back( getP1( chipID, channelID, tacID ) );
+	rval.push_back( getP2( chipID, channelID, tacID ) );
+	rval.push_back( getP3( chipID, channelID, tacID ) );
+	rval.push_back( getP4( chipID, channelID, tacID ) );
+	rval.push_back( getP5( chipID, channelID, tacID ) );
+	rval.push_back( getP6( chipID, channelID, tacID ) );
+	rval.push_back( getP7( chipID, channelID, tacID ) );
+	rval.push_back( getP8( chipID, channelID, tacID ) );
+	rval.push_back( getP9( chipID, channelID, tacID ) );
+
+	return rval;
+}
+
+void TOF_TdcQdcCalibration::printQdcCalibTable( uint32_t absChannelID )
+{
+	auto chipID    = getChipID   ( absChannelID );
+	auto channelID = getChannelID( absChannelID );
+
+	printf("==============================================\n");
+	printf("Absolute channel ID = %03d\n", absChannelID);
+	printf("-> chipID= %2d, channelID in the chip= %2d\n", chipID, channelID );
+	printf("==============================================\n");
+	printf("tacID\t");
+	for( int i=0; i<10; i++ ) printf("p%d\t",i);
+	printf("\n");
+
+	for( int tac=0; tac<4; tac++)
+	{
+		printf("%d\t", tac );
+		auto params = getQdcParams( absChannelID, tac );
+		for( int i=0; i<10; i++ )
+		{
+			printf("%2.2e\t", params.at(i)); 
+		}
+		printf("\n");
+	}
+
 	return;
+}
+
+void TOF_TdcQdcCalibration::printTdcCalibTable( uint32_t absChannelID ) 
+{
+
 }
 
 /// T branch
@@ -162,7 +230,7 @@ double TOF_TdcQdcCalibration::getCalibratedTime_E( uint32_t absChannelID, uint8_
 }
 
 //double getEnergy( TOF_TdcQdcCalibration *calp, unsigned int cid, unsigned short tid, long long fid, unsigned short ecoarse, unsigned short efine, double time )
-double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
+double TOF_TdcQdcCalibration::getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
 {
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );
@@ -178,8 +246,8 @@ double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t t
   double p8 = getP8( chipID, channelID, tacID );
   double p9 = getP9( chipID, channelID, tacID );
 
-  double frequency = 200E6;
-  double Tps = 1E12/frequency;
+  //double frequency = 200E6;
+  //double Tps = 1E12/frequency;
 
   double timeEnd = double(frameID*1024+ecoarse);
   double energy  = double(efine);
@@ -189,7 +257,7 @@ double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t t
   float delta = 0;
   int iter = 0;
 
-	std::cout << "timeEnd: " << timeEnd << ", ti: " << ti << std::endl;
+	//std::cout << "timeEnd: " << timeEnd << ", ti: " << ti << std::endl;
 
   do {
     float f = (p0 - efine) +
@@ -229,6 +297,44 @@ double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t t
   energy = t_eq - ti;
   
   return energy;
+}
+
+//double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
+double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, unsigned short tcoarse, double time )
+{
+	auto chipID    = getChipID   ( absChannelID );
+	auto channelID = getChannelID( absChannelID );
+	
+  double p0 = getP0( chipID, channelID, tacID );
+  double p1 = getP1( chipID, channelID, tacID );
+  double p2 = getP2( chipID, channelID, tacID );
+  double p3 = getP3( chipID, channelID, tacID );
+  double p4 = getP4( chipID, channelID, tacID );
+  double p5 = getP5( chipID, channelID, tacID );
+  double p6 = getP6( chipID, channelID, tacID );
+  double p7 = getP7( chipID, channelID, tacID );
+  double p8 = getP8( chipID, channelID, tacID );
+  double p9 = getP9( chipID, channelID, tacID );
+
+	if((ecoarse - tcoarse) < -256) ecoarse += 1024;
+  double timeEnd = double(frameID*1024+ecoarse);
+  float ti = (timeEnd - time);
+
+	//std::cout << "timeEnd: " << timeEnd << ", ti: " << ti << std::endl;
+
+  float rval = 
+		p0 +
+    p1 * ti + 
+    p2 * ti * ti + 
+    p3 * ti * ti * ti + 
+    p4 * ti * ti * ti * ti +
+    p5 * ti * ti * ti * ti * ti + 
+    p6 * ti * ti * ti * ti * ti * ti + 
+    p7 * ti * ti * ti * ti * ti * ti * ti + 
+    p8 * ti * ti * ti * ti * ti * ti * ti * ti +
+    p9 * ti * ti * ti * ti * ti * ti * ti * ti * ti;
+    
+  return rval; 
 }
 
 std::vector<uint8_t> TOF_TdcQdcCalibration::getChipIDChannelID( uint32_t absChannelID )
