@@ -103,13 +103,11 @@ void biasScan()
 	}
 
 
-	int j=0;
-
 	TOF_CoincidenceEvents* theCoin = nullptr;
 	TOF_TreeData* tD{nullptr};
-	//for( int j=0; j< vFile.size(); j++ )
-	//{
-	//	if( j>1 ) break;
+	for( int j=0; j< vFile.size(); j++ )
+	{
+		if( j>1 ) break;
 
 		cout << "===========================================" << endl;
 		cout << "[" << j << "] File: " << vFile.at(j)->GetName() << endl;
@@ -126,19 +124,19 @@ void biasScan()
 
 
 
-		TFile* ff = new TFile("../data/20250909/bias_Vset161_Vsense163/test_qdc_raw.root");
+		//TFile* ff = new TFile("../data/20250909/bias_Vset161_Vsense163/test_qdc_raw.root");
 
 
 		cout << "[biasScan] OK0" << endl;
-	  //tD = (TOF_TreeData*) vFile.at(j)->Get("data");
-	  tD = (TOF_TreeData*) ff->Get("data");
+	  tD = (TOF_TreeData*) vFile.at(j)->Get("data");
+	  //tD = (TOF_TreeData*) ff->Get("data");
 		cout << "[biasScan] OK1" << endl;
 	  if( !tD ) {
 			delete vFile.at(j);
-			//continue;
+			continue;
 		}
 
-		tD->SetDirectory( dir0 ); // isolate tD from fin
+		//tD->SetDirectory( dir0 ); // isolate tD from fin
 		cout << "[biasScan] OK2" << endl;
 		tD->SetName( Form("t_%03.0fV_%d_%d", Vsense, measNo,j) );
 		cout << "[biasScan] OK3" << endl;
@@ -181,17 +179,20 @@ void biasScan()
 		cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted tree entries: " << vTree.size() << endl; // << " ==> tC->GetEntries()= " << tC->GetEntries() << endl;
 		//cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted tree entries: " << vTree.size() << " ==> tC->GetEntries()= " << tC->GetEntries() << endl;
 
-		//delete theCoin;
+		delete theCoin;
+		theCoin=nullptr;
 
 		//fin->Close();
 		//delete fin;
 		
 		//delete tD;
+		tD=nullptr;
+
 		//delete tC;
 
 		//vFile.at(j)->Close();
 
 		
-	//}
+	}
 
 }
