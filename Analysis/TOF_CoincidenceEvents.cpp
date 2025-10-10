@@ -348,7 +348,7 @@ void TOF_CoincidenceEvents::reset()
 	{
     // fTree는 CloneTree()로 생성된 객체이므로 삭제해야 함
     fTree->ResetBranchAddresses(); // 이미 Clone된 객체에선 필요 없을 수 있음
-    //delete fTree;
+    delete fTree;
     fTree=nullptr;
 		//std::cout << "[TOF_CoincidenceEvents::reset()] fTree is reset" << std::endl;
   }

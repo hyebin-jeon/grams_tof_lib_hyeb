@@ -5,10 +5,6 @@ namespace fs = std::filesystem;
 
 void biasScan()
 {
-	TFile* fnew = new TFile("output/fnew.root", "recreate");
-	fnew->cd();
-	auto dir0 = gDirectory;
-
 	/// Class setup
 	//TOF_CoincidenceEvents* theCoin = new TOF_CoincidenceEvents(); //::getInstance();
   auto theChanConv = TOF_ChannelConversion::getInstance();
@@ -102,12 +98,16 @@ void biasScan()
 		i++;
 	}
 
+	TFile* fnew = new TFile("output/fnew.root", "recreate");
+	fnew->cd();
+	auto dir0 = gDirectory;
+
 
 	TOF_CoincidenceEvents* theCoin = nullptr;
 	TOF_TreeData* tD{nullptr};
 	for( int j=0; j< vFile.size(); j++ )
 	{
-		if( j>1 ) break;
+		//if( j>5 ) break;
 
 		cout << "===========================================" << endl;
 		cout << "[" << j << "] File: " << vFile.at(j)->GetName() << endl;
@@ -122,8 +122,6 @@ void biasScan()
 	  if( ((TString) vFile.at(j)->GetName()).Contains("3rd")) measNo=3;
 	
 
-
-
 		//TFile* ff = new TFile("../data/20250909/bias_Vset161_Vsense163/test_qdc_raw.root");
 
 
@@ -136,7 +134,7 @@ void biasScan()
 			continue;
 		}
 
-		//tD->SetDirectory( dir0 ); // isolate tD from fin
+		//tD->SetDirectory( 0 ); // isolate tD from fin
 		cout << "[biasScan] OK2" << endl;
 		tD->SetName( Form("t_%03.0fV_%d_%d", Vsense, measNo,j) );
 		cout << "[biasScan] OK3" << endl;
@@ -186,13 +184,11 @@ void biasScan()
 		//delete fin;
 		
 		//delete tD;
-		tD=nullptr;
+		//tD=nullptr;
 
 		//delete tC;
 
 		//vFile.at(j)->Close();
-
 		
 	}
-
 }
