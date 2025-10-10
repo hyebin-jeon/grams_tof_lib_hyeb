@@ -80,7 +80,7 @@ int TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
 		//std::cout << "[TDC calib] T0: " << t0 << std::endl;
     ndata++;
   } while( 1 );
-  std::cout << Form( "TDC Calibration Data %d lines", ndata ) << std::endl;
+  std::cout << Form( "TDC Calibration Data (%d lines) Loaded.", ndata ) << std::endl;
 
 	return 1;
 }
@@ -119,7 +119,7 @@ int TOF_TdcQdcCalibration::readQdcCalib( const char *fname )
 		//std::cout << "[QDC calib] P0: " << p0 << std::endl;
 		ndata++;
   } while( 1 );
-  std::cout << Form( "QDC Calibration Data %d lines", ndata ) << std::endl;
+  std::cout << Form( "QDC Calibration Data (%d lines) Loaded.", ndata ) << std::endl;
 
 	return 1;
 }

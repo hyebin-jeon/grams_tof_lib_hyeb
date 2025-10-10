@@ -5,15 +5,40 @@ ClassImp( TOF_TreeData );
 
 void TOF_TreeData::setBranchAddress()
 {
-  this->SetBranchAddress("step1"    , &step1    );
-  this->SetBranchAddress("step2"    , &step2    );
-  this->SetBranchAddress("frameID"  , &frameID  );
-  this->SetBranchAddress("channelID", &channelID);
-  this->SetBranchAddress("tacID"    , &tacID    );
-  this->SetBranchAddress("tcoarse"  , &tCoarse  );
-  this->SetBranchAddress("ecoarse"  , &eCoarse  );
-  this->SetBranchAddress("tfine"    , &tFine    );
-  this->SetBranchAddress("efine"    , &eFine    );
+	int status;
+  status = this->SetBranchAddress("step1"    , &step1    );
+	if (status < 0) std::cout << "[ERR] Failed to set address for step1 (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("step2"    , &step2    );
+	if (status < 0) std::cout << "[ERR] Failed to set address for step2 (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("frameID"  , &frameID  );
+	if (status < 0) std::cout << "[ERR] Failed to set address for frameID (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("channelID", &channelID);
+	if (status < 0) std::cout << "[ERR] Failed to set address for channelID (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("tacID"    , &tacID    );
+	if (status < 0) std::cout << "[ERR] Failed to set address for tacID (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("tcoarse"  , &tCoarse  );
+	if (status < 0) std::cout << "[ERR] Failed to set address for tcoarse (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("ecoarse"  , &eCoarse  );
+	if (status < 0) std::cout << "[ERR] Failed to set address for ecoarse (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("tfine"    , &tFine    );
+	if (status < 0) std::cout << "[ERR] Failed to set address for tfine (Status: " << status << ")" << std::endl;
+  status = this->SetBranchAddress("efine"    , &eFine    );
+	if (status < 0) std::cout << "[ERR] Failed to set address for efine (Status: " << status << ")" << std::endl;
+  
+	return;
+}
+
+void TOF_TreeData::makeBranches()
+{
+	this->Branch("step1"    , &step1     );
+	this->Branch("step2"    , &step2     );
+	this->Branch("frameID"  , &frameID   );
+	this->Branch("channelID", &channelID );
+	this->Branch("tacID"    , &tacID     );
+	this->Branch("tcoarse"  , &tCoarse   );
+	this->Branch("ecoarse"  , &eCoarse   );
+	this->Branch("tfine"    , &tFine     );
+	this->Branch("efine"    , &eFine     );
 
 	return;
 }
