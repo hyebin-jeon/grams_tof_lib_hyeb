@@ -98,13 +98,15 @@ void biasScan()
 		i++;
 	}
 
-	TFile* fnew = new TFile("output/fnew.root", "recreate");
-	fnew->cd();
-	auto dir0 = gDirectory;
+	TFile* fnew = new TFile("output/biasScan_new.root", "recreate");
 
 
 	TOF_CoincidenceEvents* theCoin = nullptr;
 	TOF_TreeData* tD{nullptr};
+	//TTree* tC{nullptr};
+	//std::vector<TOF_CoincidenceChannelInfo> vBranch;
+
+	  std::vector<TOF_CoincidenceChannelInfo> vBranch;
 	for( int j=0; j< vFile.size(); j++ )
 	{
 		//if( j>5 ) break;
@@ -136,7 +138,7 @@ void biasScan()
 
 		//tD->SetDirectory( 0 ); // isolate tD from fin
 		cout << "[biasScan] OK2" << endl;
-		tD->SetName( Form("t_%03.0fV_%d_%d", Vsense, measNo,j) );
+		tD->SetName( Form("t_%03.0fV_%d", Vsense, measNo) );
 		cout << "[biasScan] OK3" << endl;
 	  
 		/// class setup
@@ -161,32 +163,51 @@ void biasScan()
 
 	  auto vTree = theCoin->getCoincidenceEvents();
 		cout << "[biasScan] OK12" << endl;
-		/*
 
-	  TTree* tC = new TTree(Form("tC_%03.0f", Vsense), Form("tC_%03.0f", Vsense));
-		tC->SetDirectory(0);
-	  std::vector<TOF_CoincidenceChannelInfo> vBranch;
+		//gDirectory->cd();
+		fnew->cd();
+		TTree* tC = new TTree(Form("t_%03.0fV_%d", Vsense, measNo), Form("t_%03.0fV_%d", Vsense, measNo) );
+		cout << "[biasScan] OK13" << endl;
+		vBranch.clear();
+		cout << "[biasScan] OK14" << endl;
+
 		tC->Branch("coinEvt",  &vBranch, 6400, 0 );
-		for( auto vBr : vTree )
+		cout << "[biasScan] OK15" << endl;
+
+		//for( auto vBr : vTree )
+		for( int k=0; k<vTree.size(); k++ )
 		{
-			vBranch = vBr;
+			vBranch = vTree.at(k);
+			//vBranch.insert(vBranch.begin(), vBr.begin(), vBr.end());
 			tC->Fill();
+			//if( k>10) break;
 		}
-		*/
+		tC->Write();
 
-		cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted tree entries: " << vTree.size() << endl; // << " ==> tC->GetEntries()= " << tC->GetEntries() << endl;
-		//cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted tree entries: " << vTree.size() << " ==> tC->GetEntries()= " << tC->GetEntries() << endl;
+		cout << "[biasScan] OK16" << endl;
+		//cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted vector list size: " << vTree.size() << endl; 
+		cout << "==> raw tree entries: " << tD->GetEntries() << ", extracted vector list size: " << vTree.size() << " ==> tC->GetEntries()= " << tC->GetEntries() << endl;
 
-		delete theCoin;
+
+		/// clean up memories for the next loop turns
+		cout << "[biasScan] OK17" << endl;
+		tC=nullptr;
+		delete tC;
+
+		cout << "[biasScan] OK18" << endl;
+		//delete tD;
+		tD=nullptr;
+
+		cout << "[biasScan] OK19" << endl;
+		delete theCoin; // tD is deleted here
 		theCoin=nullptr;
 
 		//fin->Close();
 		//delete fin;
-		
-		//delete tD;
-		//tD=nullptr;
 
-		//delete tC;
+		vBranch.clear();
+		cout << "[biasScan] OK20" << endl;
+		cout << "[biasScan] OK21" << endl;
 
 		//vFile.at(j)->Close();
 		
