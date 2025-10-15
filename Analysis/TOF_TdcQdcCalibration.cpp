@@ -43,6 +43,31 @@ void TOF_TdcQdcCalibration::initializeParams()
 	return;
 }
 
+double TOF_TdcQdcCalibration::getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br ) { 
+	if( br == TOF_Branch::fBranchT ) return getT0_T(chipID, channelID, tacID);
+	if( br == TOF_Branch::fBranchE ) return getT0_E(chipID, channelID, tacID);
+
+	return -99;
+};
+double TOF_TdcQdcCalibration::getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br ) { 
+	if( br == TOF_Branch::fBranchT ) return getA0_T(chipID, channelID, tacID);
+	if( br == TOF_Branch::fBranchE ) return getA0_E(chipID, channelID, tacID);
+
+	return -99;
+};
+double TOF_TdcQdcCalibration::getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br ) { 
+	if( br == TOF_Branch::fBranchT ) return getA1_T(chipID, channelID, tacID);
+	if( br == TOF_Branch::fBranchE ) return getA1_E(chipID, channelID, tacID);
+
+	return -99;
+};
+double TOF_TdcQdcCalibration::getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br ) { 
+	if( br == TOF_Branch::fBranchT ) return getA2_T(chipID, channelID, tacID);
+	if( br == TOF_Branch::fBranchE ) return getA2_E(chipID, channelID, tacID);
+
+	return -99;
+};
+
 int TOF_TdcQdcCalibration::readTdcCalib( const char *fname )
 {
   std::ifstream finT( fname );
@@ -141,11 +166,62 @@ int TOF_TdcQdcCalibration::readCalibrationFiles( const char* dirPath )
 	return ok;
 }
 
-//std::vector<double> TOF_TdcQdcCalibration::getQdcParams( int32_t absChannelID, uint8_t tacID )
+std::vector<double> TOF_TdcQdcCalibration::getTdcParams_T( uint32_t absChannelID, uint8_t tacID )
+{
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
+	
+	std::vector<double> rval;
+
+	rval.push_back( getT0_T( chipID, channelID, tacID ) );
+	rval.push_back( getA0_T( chipID, channelID, tacID ) );
+	rval.push_back( getA1_T( chipID, channelID, tacID ) );
+	rval.push_back( getA2_T( chipID, channelID, tacID ) );
+
+	return rval;
+}
+std::vector<double> TOF_TdcQdcCalibration::getTdcParams_E( uint32_t absChannelID, uint8_t tacID )
+{
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
+	
+	std::vector<double> rval;
+
+	rval.push_back( getT0_E( chipID, channelID, tacID ) );
+	rval.push_back( getA0_E( chipID, channelID, tacID ) );
+	rval.push_back( getA1_E( chipID, channelID, tacID ) );
+	rval.push_back( getA2_E( chipID, channelID, tacID ) );
+
+	return rval;
+}
+std::vector<double> TOF_TdcQdcCalibration::getTdcParams( uint32_t absChannelID, uint8_t tacID )
+{
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
+	
+	std::vector<double> rval;
+
+	rval.push_back( getT0_T( chipID, channelID, tacID ) );
+	rval.push_back( getA0_T( chipID, channelID, tacID ) );
+	rval.push_back( getA1_T( chipID, channelID, tacID ) );
+	rval.push_back( getA2_T( chipID, channelID, tacID ) );
+	rval.push_back( getT0_E( chipID, channelID, tacID ) );
+	rval.push_back( getA0_E( chipID, channelID, tacID ) );
+	rval.push_back( getA1_E( chipID, channelID, tacID ) );
+	rval.push_back( getA2_E( chipID, channelID, tacID ) );
+
+
+	printf("T0: %1.3e, A0: %1.3e, A1: %1.3e, A2: %1.3e\n", rval.at(0), rval.at(1), rval.at(2), rval.at(3) );
+
+	return rval;
+}
+
 std::vector<double> TOF_TdcQdcCalibration::getQdcParams( uint32_t absChannelID, uint8_t tacID )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 
 	std::vector<double> rval;
 
@@ -165,22 +241,24 @@ std::vector<double> TOF_TdcQdcCalibration::getQdcParams( uint32_t absChannelID, 
 
 void TOF_TdcQdcCalibration::printQdcCalibTable( uint32_t absChannelID )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 
 	printf("==============================================\n");
 	printf("Absolute channel ID = %03d\n", absChannelID);
 	printf("-> chipID= %2d, channelID in the chip= %2d\n", chipID, channelID );
 	printf("==============================================\n");
 	printf("tacID\t");
-	for( int i=0; i<10; i++ ) printf("p%d\t",i);
+	for( int i=0; i<fNbOfQdcParams; i++ ) printf("p%d\t",i);
 	printf("\n");
 
-	for( int tac=0; tac<4; tac++)
+	for( int tac=0; tac<fNbOfTac; tac++)
 	{
 		printf("%d\t", tac );
 		auto params = getQdcParams( absChannelID, tac );
-		for( int i=0; i<10; i++ )
+		for( int i=0; i<fNbOfQdcParams; i++ )
 		{
 			printf("%2.2e\t", params.at(i)); 
 		}
@@ -192,6 +270,44 @@ void TOF_TdcQdcCalibration::printQdcCalibTable( uint32_t absChannelID )
 
 void TOF_TdcQdcCalibration::printTdcCalibTable( uint32_t absChannelID ) 
 {
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
+
+	printf("==============================================\n");
+	printf("Absolute channel ID = %03d\n", absChannelID);
+	printf("-> chipID= %2d, channelID in the chip= %2d\n", chipID, channelID );
+	printf("==============================================\n");
+	printf("br\ttacID\t");
+
+	/// table content titles
+	for( int i=0; i<fNbOfTdcParams; i++ ) printf("p%d\t",i);
+	printf("\n");
+
+
+	/// T branch
+	for( int tac=0; tac<fNbOfTac; tac++)
+	{
+		printf("T\t%d\t", tac );
+		auto params = getTdcParams_T( absChannelID, tac );
+		for( int i=0; i<fNbOfTdcParams; i++ )
+		{
+			printf("%2.2e\t", params.at(i)); 
+		}
+		printf("\n");
+	}
+
+	/// E branch
+	for( int tac=0; tac<fNbOfTac; tac++)
+	{
+		printf("E\t%d\t", tac );
+		auto params = getTdcParams_E( absChannelID, tac );
+		for( int i=0; i<fNbOfTdcParams; i++ )
+		{
+			printf("%2.2e\t", params.at(i)); 
+		}
+		printf("\n");
+	}
+	return;
 
 }
 
@@ -202,10 +318,12 @@ double TOF_TdcQdcCalibration::getCalibratedTime_T( uint32_t absChannelID, uint8_
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );
 
-  double t0 = getT0( chipID, channelID, tacID );
-  double a0 = getA0( chipID, channelID, tacID );
-  double a1 = getA1( chipID, channelID, tacID );
-  double a2 = getA2( chipID, channelID, tacID );
+	TOF_Branch br = TOF_Branch::fBranchT;
+
+  double t0 = getT0( chipID, channelID, tacID, br );
+  double a0 = getA0( chipID, channelID, tacID, br );
+  double a1 = getA1( chipID, channelID, tacID, br );
+  double a2 = getA2( chipID, channelID, tacID, br );
   
   float q_T = ( -a1 + sqrtf((a1*a1) - (4.0f * (a0 - tfine) * a2))) / (2.0f * a2);
 
@@ -219,10 +337,12 @@ double TOF_TdcQdcCalibration::getCalibratedTime_E( uint32_t absChannelID, uint8_
 	auto chipID    = getChipID   ( absChannelID );
 	auto channelID = getChannelID( absChannelID );
 
-  double t0 = getT0( chipID, channelID, tacID, kFALSE );
-  double a0 = getA0( chipID, channelID, tacID, kFALSE );
-  double a1 = getA1( chipID, channelID, tacID, kFALSE );
-  double a2 = getA2( chipID, channelID, tacID, kFALSE );
+	TOF_Branch br = TOF_Branch::fBranchE;
+
+  double t0 = getT0( chipID, channelID, tacID, br );
+  double a0 = getA0( chipID, channelID, tacID, br );
+  double a1 = getA1( chipID, channelID, tacID, br );
+  double a2 = getA2( chipID, channelID, tacID, br );
   
   float q_E = ( -a1 + sqrtf((a1*a1) - (4.0f * (a0 - efine) * a2))) / (2.0f * a2);
 

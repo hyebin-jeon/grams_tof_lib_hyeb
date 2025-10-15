@@ -8,6 +8,9 @@
 #include "TObject.h"
 #include "TString.h"
 #include "TOF_Constants.h"
+//#include "TOF_TdcQdcCalibration.h"
+#include "TOF_ChannelConversion.h"
+
 
 class TOF_TdcQdcCalibration : public TObject
 {
@@ -32,6 +35,11 @@ class TOF_TdcQdcCalibration : public TObject
 
     ~TOF_TdcQdcCalibration() = default;
 
+	private:
+		const int fNbOfTdcParams {4};
+		const int fNbOfQdcParams {10};
+		const int fNbOfTac {4}; // in a single channel
+
 	public:
 		void initializeParams();
 	  /// QDC calibration parameters
@@ -50,10 +58,26 @@ class TOF_TdcQdcCalibration : public TObject
  
 	  /// TDC calibration parameters. 
 	  /// T branch params when isT = kTRUE, else E branch. isT is fixed to kTRUE
-    inline double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? T0[chipID][channelID][tacID][0] : T0[chipID][channelID][tacID][1]; };
-    inline double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A0[chipID][channelID][tacID][0] : A0[chipID][channelID][tacID][1]; };
-    inline double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A1[chipID][channelID][tacID][0] : A1[chipID][channelID][tacID][1]; };
-    inline double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A2[chipID][channelID][tacID][0] : A2[chipID][channelID][tacID][1]; };
+    //inline double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? T0[chipID][channelID][tacID][0] : T0[chipID][channelID][tacID][1]; };
+    //inline double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A0[chipID][channelID][tacID][0] : A0[chipID][channelID][tacID][1]; };
+    //inline double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A1[chipID][channelID][tacID][0] : A1[chipID][channelID][tacID][1]; };
+    //inline double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A2[chipID][channelID][tacID][0] : A2[chipID][channelID][tacID][1]; };
+    inline double getT0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return T0[chipID][channelID][tacID][0]; };
+    inline double getA0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A0[chipID][channelID][tacID][0]; };
+    inline double getA1_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A1[chipID][channelID][tacID][0]; };
+    inline double getA2_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A2[chipID][channelID][tacID][0]; };
+    inline double getT0_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return T0[chipID][channelID][tacID][1]; };
+    inline double getA0_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A0[chipID][channelID][tacID][1]; };
+    inline double getA1_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A1[chipID][channelID][tacID][1]; };
+    inline double getA2_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A2[chipID][channelID][tacID][1]; };
+    double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+		std::vector<double> getTdcParams_T( uint32_t absChannelID, uint8_t tacID );
+		std::vector<double> getTdcParams_E( uint32_t absChannelID, uint8_t tacID );
+		std::vector<double> getTdcParams( uint32_t absChannelID, uint8_t tacID );
+		
 
     int readTdcCalib( const char *fname );
     int readQdcCalib( const char *fname );
