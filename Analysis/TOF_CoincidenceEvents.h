@@ -48,7 +48,7 @@ class TOF_CoincidenceEvents : public TObject
 		std::vector< uint32_t > fActiveChannelList;
 
 	public:
-		int   setTreeData( TOF_TreeData* tr );// { fTree = tr; };
+		int  setTreeData( TOF_TreeData* tr );// { fTree = tr; };
 		void setTriggerChannel( uint32_t trigCh ) { fTrigChannelID = trigCh; }; // coincidence evt using trigger channel is not prepared yet
 		void setActiveChannels( std::vector<uint32_t> chanList );
 		void setCoincidenceTimeWindowInClk( double twindow ) { fCoinTimeWindow = twindow; }; // in clock

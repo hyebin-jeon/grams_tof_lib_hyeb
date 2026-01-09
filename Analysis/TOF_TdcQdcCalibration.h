@@ -58,10 +58,6 @@ class TOF_TdcQdcCalibration : public TObject
  
 	  /// TDC calibration parameters. 
 	  /// T branch params when isT = kTRUE, else E branch. isT is fixed to kTRUE
-    //inline double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? T0[chipID][channelID][tacID][0] : T0[chipID][channelID][tacID][1]; };
-    //inline double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A0[chipID][channelID][tacID][0] : A0[chipID][channelID][tacID][1]; };
-    //inline double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A1[chipID][channelID][tacID][0] : A1[chipID][channelID][tacID][1]; };
-    //inline double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A2[chipID][channelID][tacID][0] : A2[chipID][channelID][tacID][1]; };
     inline double getT0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return T0[chipID][channelID][tacID][0]; };
     inline double getA0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A0[chipID][channelID][tacID][0]; };
     inline double getA1_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A1[chipID][channelID][tacID][0]; };
@@ -88,16 +84,15 @@ class TOF_TdcQdcCalibration : public TObject
 		void printCalibTable( uint32_t absChannelID );
 
 	public:
-		std::vector<uint8_t> getChipIDChannelID( uint32_t absChannelID );
-		uint8_t getChipID( uint32_t absChannelID ); // 0 to 15
-		uint8_t getChannelID( uint32_t absChannelID ); // 0 to 63
+		//std::vector<uint8_t> getChipIDChannelID( uint32_t absChannelID );
+		//uint8_t getChipID( uint32_t absChannelID ); // 0 to 15
+		//uint8_t getChannelID( uint32_t absChannelID ); // 0 to 63
 
 
 	public:
 		double getCalibratedTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine );
     double getCalibratedTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine );
     double getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time ); 
-    //double getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time ); 
     double getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine,  unsigned short tcoarse, double time ); 
     
 		double getCalibratedTime( TOF_Branch branchMode, uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short coarse, unsigned short fine )

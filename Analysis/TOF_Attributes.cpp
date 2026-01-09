@@ -29,7 +29,30 @@ void TOF_Attributes::attribGraph( TGraph* g )
 	g->SetLineColorAlpha(color, alpha);
 	g->GetYaxis()->SetTitleOffset(1.3);
 }
+void TOF_Attributes::attribGraphErrors( TGraphErrors* g, int color, int marker, int lineSty, double alpha, int lineW )
+{
+	g->SetMarkerColorAlpha(color, alpha);
+	g->SetMarkerStyle(marker);
+	g->SetLineStyle(lineSty);
+	g->SetLineWidth( lineW );
+	g->SetLineColorAlpha(color, alpha);
+	g->GetYaxis()->SetTitleOffset(1.3);
+}
+void TOF_Attributes::attribGraphErrors( TGraphErrors* g )
+{
+	int    color   = fPrettyGreen;
+	double alpha   = fPrettyAlpha_graph;
+	int    marker  = 20;
+	int    lineSty = 1;
+	int    lineW   = 1;
 
+	g->SetMarkerColorAlpha(color, alpha);
+	g->SetMarkerStyle(marker);
+	g->SetLineStyle(lineSty);
+	g->SetLineWidth( lineW );
+	g->SetLineColorAlpha(color, alpha);
+	g->GetYaxis()->SetTitleOffset(1.3);
+}
 ///////////////////////////////////////////////////////////////////////////////
 /// Hist Attrib
 ///////////////////////////////////////////////////////////////////////////////

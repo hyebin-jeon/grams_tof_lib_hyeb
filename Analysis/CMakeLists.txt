@@ -11,6 +11,7 @@ set(GRAMS_TOF_ANALYSIS_FILES
 	TOF_ParameterScan.cpp
 	TOF_CoincidenceEvents.cpp
 	TOF_CoincidenceChannelInfo.cpp
+	TOF_DiscriminatorCalibation.cpp
 )
 
 set(GRAMS_TOF_ANALYSIS_CLASSES
@@ -23,6 +24,7 @@ set(GRAMS_TOF_ANALYSIS_CLASSES
 	TOF_ParameterScan
 	TOF_CoincidenceEvents
 	TOF_CoincidenceChannelInfo
+	TOF_DiscriminatorCalibation
 )
 
 set(GRAMS_TOF_ANALYSIS_HEADERS
@@ -36,6 +38,7 @@ set(GRAMS_TOF_ANALYSIS_HEADERS
 	TOF_ParameterScan.h
 	TOF_CoincidenceEvents.h
 	TOF_CoincidenceChannelInfo.h
+	TOF_DiscriminatorCalibation.h
 )
 
 # ROOT dictionary

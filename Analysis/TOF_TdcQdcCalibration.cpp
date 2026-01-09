@@ -9,7 +9,7 @@ void TOF_TdcQdcCalibration::initializeParams()
 {
 	int chipN    = NUMBER_OF_ASICS;
 	int channelN = NUMBER_OF_CHANNELS_OF_ASIC;
-	int tacN     = NUMBER_OF_TAC_OF_CHANNEL;
+	int tacN     = fNbOfTac;
 	int branchN    = 2; // T or E 
 
 	/// initialization
@@ -218,8 +218,6 @@ std::vector<double> TOF_TdcQdcCalibration::getTdcParams( uint32_t absChannelID, 
 
 std::vector<double> TOF_TdcQdcCalibration::getQdcParams( uint32_t absChannelID, uint8_t tacID )
 {
-	//auto chipID    = getChipID   ( absChannelID );
-	//auto channelID = getChannelID( absChannelID );
 	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
 	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 
@@ -315,8 +313,10 @@ void TOF_TdcQdcCalibration::printTdcCalibTable( uint32_t absChannelID )
 //double TOF_TdcQdcCalibration::getTime( TOF_TdcQdcCalibration *calp, unsigned int cid, unsigned short tid, long long fid, unsigned short tcoarse, unsigned short tfine )
 double TOF_TdcQdcCalibration::getCalibratedTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 
 	TOF_Branch br = TOF_Branch::fBranchT;
 
@@ -334,8 +334,10 @@ double TOF_TdcQdcCalibration::getCalibratedTime_T( uint32_t absChannelID, uint8_
 /// this function for E branch is valid when ToT mode
 double TOF_TdcQdcCalibration::getCalibratedTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 
 	TOF_Branch br = TOF_Branch::fBranchE;
 
@@ -352,8 +354,10 @@ double TOF_TdcQdcCalibration::getCalibratedTime_E( uint32_t absChannelID, uint8_
 //double getEnergy( TOF_TdcQdcCalibration *calp, unsigned int cid, unsigned short tid, long long fid, unsigned short ecoarse, unsigned short efine, double time )
 double TOF_TdcQdcCalibration::getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 	
   double p0 = getP0( chipID, channelID, tacID );
   double p1 = getP1( chipID, channelID, tacID );
@@ -422,8 +426,10 @@ double TOF_TdcQdcCalibration::getEnergy( uint32_t absChannelID, uint8_t tacID, l
 //double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time )
 double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, unsigned short tcoarse, double time )
 {
-	auto chipID    = getChipID   ( absChannelID );
-	auto channelID = getChannelID( absChannelID );
+	//auto chipID    = getChipID   ( absChannelID );
+	//auto channelID = getChannelID( absChannelID );
+	auto chipID    = (TOF_ChannelConversion::getInstance())->getAsicID   ( absChannelID );
+	auto channelID = (TOF_ChannelConversion::getInstance())->getChannelID( absChannelID );
 	
   double p0 = getP0( chipID, channelID, tacID );
   double p1 = getP1( chipID, channelID, tacID );
@@ -457,6 +463,7 @@ double TOF_TdcQdcCalibration::getCalibratedQDC( uint32_t absChannelID, uint8_t t
   return rval; 
 }
 
+/*
 std::vector<uint8_t> TOF_TdcQdcCalibration::getChipIDChannelID( uint32_t absChannelID )
 {
 	//uint8_t portID    = (absChannelID >> 17) & 0x1F; 
@@ -480,4 +487,4 @@ uint8_t TOF_TdcQdcCalibration::getChannelID( uint32_t absChannelID )
 {
 	return getChipIDChannelID( absChannelID ).at(1);
 }
-
+*/

@@ -12,6 +12,7 @@
 #pragma link C++ class TOF_CoincidenceEvents+;
 #pragma link C++ class TOF_CoincidenceEvents+;
 #pragma link C++ class TOF_CoincidenceChannelInfo+;
+#pragma link C++ class TOF_DiscriminatorCalibration+;
 #pragma link C++ class std::vector<TOF_ChannelConversion>+;
 #pragma link C++ class std::vector<TOF_TdcQdcCalibration>+;
 //#pragma link C++ class std::vector<TOF_TreeData>+; // TTree is not available for vector<>
@@ -21,6 +22,7 @@
 #pragma link C++ class std::vector<TOF_ParameterScan>+;
 #pragma link C++ class std::vector<TOF_CoincidenceEvents>+;
 #pragma link C++ class std::vector<TOF_CoincidenceChannelInfo>+;
+#pragma link C++ class std::vector<TOF_DiscriminatorCalibration>+;
 //#pragma link C++ namespace Some::Nested::Namespace;
 //#pragma link C++ enum myEnum;
 #endif
