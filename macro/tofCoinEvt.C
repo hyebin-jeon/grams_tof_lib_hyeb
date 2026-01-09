@@ -14,17 +14,17 @@ void tofCoinEvt()
   auto theAttrib   = TOF_Attributes::getInstance();
 
   auto theCalib    = TOF_TdcQdcCalibration::getInstance();
-	//theCalib->readCalibrationFiles( "../calibration/20250903" );
-	theCalib->readCalibrationFiles( "../calibration/20250909" );
+	theCalib->readCalibrationFiles( "../calibration/20250903" );
+	//theCalib->readCalibrationFiles( "../calibration/20250909" );
 
-	//const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20250903_QDC_vs_ToT";
+	const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20250903_QDC_vs_ToT";
 	//const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20250909_diffBiasVolt/bias_Vset164_Vsense166";
-	const char* dirName = "../data/20250909/bias_Vset164_Vsense166";
+	//const char* dirName = "../data/20250909/bias_Vset164_Vsense166";
 	const char* finName = "test_qdc_raw.root";
 	const char* finPath = Form( "%s/%s", dirName, finName );
 	
-	//const char* pdf_suffix = "_0903";
-	const char* pdf_suffix = "_0909";
+	const char* pdf_suffix = "_0903_tdcCorrected";
+	//const char* pdf_suffix = "_0909";
 	
 	int qdcmode = -1;
 	if( ((TString) finName).Contains("qdc") ) qdcmode = 1; //qdc
