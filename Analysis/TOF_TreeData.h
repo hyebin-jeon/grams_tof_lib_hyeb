@@ -5,6 +5,7 @@
 
 #include "TTree.h"
 #include "TObject.h"
+#include <iostream>
 
 class TOF_TreeData : public TTree
 {
@@ -34,6 +35,7 @@ class TOF_TreeData : public TTree
 
 	public: 
 		void setBranchAddress();
+		void makeBranches();
 	
 	private: 
     float           step1;

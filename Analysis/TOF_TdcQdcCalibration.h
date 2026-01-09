@@ -8,6 +8,9 @@
 #include "TObject.h"
 #include "TString.h"
 #include "TOF_Constants.h"
+//#include "TOF_TdcQdcCalibration.h"
+#include "TOF_ChannelConversion.h"
+
 
 class TOF_TdcQdcCalibration : public TObject
 {
@@ -32,6 +35,11 @@ class TOF_TdcQdcCalibration : public TObject
 
     ~TOF_TdcQdcCalibration() = default;
 
+	private:
+		const int fNbOfTdcParams {4};
+		const int fNbOfQdcParams {10};
+		const int fNbOfTac {4}; // in a single channel
+
 	public:
 		void initializeParams();
 	  /// QDC calibration parameters
@@ -45,34 +53,53 @@ class TOF_TdcQdcCalibration : public TObject
     inline double getP7( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return P7[chipID][channelID][tacID]; };
     inline double getP8( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return P8[chipID][channelID][tacID]; };
     inline double getP9( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return P9[chipID][channelID][tacID]; };
+		std::vector<double> getQdcParams( uint32_t absChannelID, uint8_t tacID );
+
  
 	  /// TDC calibration parameters. 
 	  /// T branch params when isT = kTRUE, else E branch. isT is fixed to kTRUE
-    inline double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? T0[chipID][channelID][tacID][0] : T0[chipID][channelID][tacID][1]; };
-    inline double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A0[chipID][channelID][tacID][0] : A0[chipID][channelID][tacID][1]; };
-    inline double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A1[chipID][channelID][tacID][0] : A1[chipID][channelID][tacID][1]; };
-    inline double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, bool isT = kTRUE ) { return isT? A2[chipID][channelID][tacID][0] : A2[chipID][channelID][tacID][1]; };
+    inline double getT0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return T0[chipID][channelID][tacID][0]; };
+    inline double getA0_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A0[chipID][channelID][tacID][0]; };
+    inline double getA1_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A1[chipID][channelID][tacID][0]; };
+    inline double getA2_T( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A2[chipID][channelID][tacID][0]; };
+    inline double getT0_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return T0[chipID][channelID][tacID][1]; };
+    inline double getA0_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A0[chipID][channelID][tacID][1]; };
+    inline double getA1_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A1[chipID][channelID][tacID][1]; };
+    inline double getA2_E( uint8_t chipID, uint32_t channelID, uint8_t tacID ) { return A2[chipID][channelID][tacID][1]; };
+    double getT0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA0( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA1( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+    double getA2( uint8_t chipID, uint32_t channelID, uint8_t tacID, TOF_Branch br );
+		std::vector<double> getTdcParams_T( uint32_t absChannelID, uint8_t tacID );
+		std::vector<double> getTdcParams_E( uint32_t absChannelID, uint8_t tacID );
+		std::vector<double> getTdcParams( uint32_t absChannelID, uint8_t tacID );
+		
 
-    void readTdcCalib( const char *fname );
-    void readQdcCalib( const char *fname );
-		void readCalibrationFiles( const char* fTdcCalib, const char* fQdcCalib );
+    int readTdcCalib( const char *fname );
+    int readQdcCalib( const char *fname );
+		int readCalibrationFiles( const char* fTdcCalib, const char* fQdcCalib );
+		int readCalibrationFiles( const char* dirPath );
+		void printTdcCalibTable( uint32_t absChannelID );
+		void printQdcCalibTable( uint32_t absChannelID );
+		void printCalibTable( uint32_t absChannelID );
 
 	public:
-		std::vector<uint8_t> getChipIDChannelID( uint32_t absChannelID );
-		uint8_t getChipID( uint32_t absChannelID ); // 0 to 15
-		uint8_t getChannelID( uint32_t absChannelID ); // 0 to 63
+		//std::vector<uint8_t> getChipIDChannelID( uint32_t absChannelID );
+		//uint8_t getChipID( uint32_t absChannelID ); // 0 to 15
+		//uint8_t getChannelID( uint32_t absChannelID ); // 0 to 63
 
 
 	public:
 		double getCalibratedTime_T( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short tcoarse, unsigned short tfine );
     double getCalibratedTime_E( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine );
-    double getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time ); // was getEnergy().
+    double getEnergy( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine, double time ); 
+    double getCalibratedQDC( uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short ecoarse, unsigned short efine,  unsigned short tcoarse, double time ); 
     
-		double getCalibratedTime( TOF_Mode branchMode, uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short coarse, unsigned short fine )
+		double getCalibratedTime( TOF_Branch branchMode, uint32_t absChannelID, uint8_t tacID, long long frameID, unsigned short coarse, unsigned short fine )
 		{
-			if( branchMode == TOF_Mode::fQdc )
+			if( branchMode == TOF_Branch::fBranchT )
 				return getCalibratedTime_T(absChannelID, tacID, frameID, coarse, fine );
-			else if ( branchMode == TOF_Mode::fTot )
+			else if ( branchMode == TOF_Branch::fBranchE )
 			  return getCalibratedTime_E(absChannelID, tacID, frameID, coarse, fine );
 			else 
 			{
@@ -80,7 +107,6 @@ class TOF_TdcQdcCalibration : public TObject
 				return TOF_ERR_OUT_OF_RANGE;
 			}
 		}
-
 
 	private:
 	  /// param[chipID][channelID][tacID][T or E]

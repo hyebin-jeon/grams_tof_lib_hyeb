@@ -34,10 +34,12 @@ class TOF_ChannelConversion : public TObject
 		std::map< uint8_t, uint8_t > getMapChannelIdToConnId();
 
 		/// Conversion from connector IDs (hardware) to channel IDs (software)
-		uint8_t getAsicID( uint8_t febD_connID, uint8_t febS_connID ); // [0-15]
-		uint8_t getChannelID_128( uint8_t febS_connID ); // [0-127] within a set of two ASICs
-		uint8_t getChannelID_64 ( uint8_t febS_connID ); // [0-63] within an ASIC
+		uint8_t  getAsicID( uint8_t febD_connID, uint8_t febS_connID ); // [0-15]
+		uint8_t  getChannelID_128( uint8_t febS_connID ); // [0-127] within a set of two ASICs
+		uint8_t  getChannelID_64 ( uint8_t febS_connID ); // [0-63] within an ASIC
     uint32_t getAbsoluteChannelID( uint8_t febD_connID, uint8_t febS_connID );
+
+		uint32_t getAbsoluteChannelID( uint8_t portID, uint8_t slaveID, uint8_t chipID, uint8_t channelID );
 
 		/// Break an absolute channel ID into each element
 		uint8_t getPortID   ( uint32_t channel );

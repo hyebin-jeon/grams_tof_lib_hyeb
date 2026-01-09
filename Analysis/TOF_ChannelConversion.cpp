@@ -241,6 +241,7 @@ uint8_t TOF_ChannelConversion::getAsicID( uint8_t febD_connID, uint8_t febS_conn
 	uint8_t asicID0 = (febD_connID-1)*2; 
 	uint8_t chanID0 = getChannelID_128( febS_connID );
 	uint8_t asicID  = asicID0 + chanID0/64;
+
 	return asicID;
 }
 	
@@ -262,6 +263,12 @@ uint32_t TOF_ChannelConversion::getAbsoluteChannelID( uint8_t febD_connID, uint8
 
 	return absChanID;
 }
+
+uint32_t TOF_ChannelConversion::getAbsoluteChannelID( uint8_t portID, uint8_t slaveID, uint8_t chipID, uint8_t channelID )
+{
+	return 131072*portID + 4096*slaveID + 64*chipID + channelID;
+}
+
 		
 uint8_t TOF_ChannelConversion::getPortID( uint32_t channel )
 {

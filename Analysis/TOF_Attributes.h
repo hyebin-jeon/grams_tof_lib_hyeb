@@ -45,6 +45,8 @@ class TOF_Attributes : public TObject
     /// Graph
     void attribGraph( TGraph* g );
     void attribGraph( TGraph* g, int color, int marker, int line=1, double alpha=0.6, int lineW=1 );
+    void attribGraphErrors( TGraphErrors* g );
+    void attribGraphErrors( TGraphErrors* g, int color, int marker, int line=1, double alpha=0.6, int lineW=1 );
 
 		/// Histogram
     void attribHist( TH1* hist );
