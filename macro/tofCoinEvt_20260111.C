@@ -342,13 +342,14 @@ void tofCoinEvt_20260111()
 	theCoin->fHisto_NbOfEvt->Write();
 	theCoin->fHisto_TvsQcal->Write();
 
+	cout << "=================================" << endl;
+	cout << "ouput: " << fout->GetName() << endl;
+	cout << "=================================" << endl;
+
 	//fout->Write();
 	//fout->Close();
 	
 
-	//cout << "=================================" << endl;
-	//cout << "ouput: " << pdfName.Data() << endl;
-	//cout << "=================================" << endl;
 
 }
 

@@ -485,6 +485,13 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 	gPad->SetGrid();
 	canv02->Print("coincidence_CHvsNbOfEvt.png");
 
-	return;
+	canv00->Close();
+	canv01->Close();
+	canv02->Close();
+
+	delete canv00;
+	delete canv01;
+	delete canv02;
+
 	return;
 }
