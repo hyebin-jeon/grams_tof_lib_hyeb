@@ -342,7 +342,7 @@ void tofCoinEvt_20260111()
 	theCoin->fHisto_NbOfEvt->Write();
 	theCoin->fHisto_TvsQcal->Write();
 
-	fout->Write();
+	//fout->Write();
 	//fout->Close();
 	
 

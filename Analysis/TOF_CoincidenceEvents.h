@@ -14,6 +14,7 @@
 #include "TOF_TreeData.h"
 #include "TOF_CoincidenceChannelInfo.h"
 #include "TOF_Fitting.h"
+#include "TOF_Attributes.h"
 
 enum class TOF_QdcCalibMethod {
 	fGetEnergy = 0,
