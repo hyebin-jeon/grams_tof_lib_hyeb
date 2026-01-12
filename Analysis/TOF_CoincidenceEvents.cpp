@@ -354,6 +354,9 @@ void TOF_CoincidenceEvents::reset()
   }
   
   vTree.clear();
+
+	delete fHisto_dT;
+	fHisto_dT = nullptr;
 		
 	std::cout << "[TOF_CoincidenceEvents::reset()] Reset Completed" << std::endl;
 };
@@ -365,4 +368,79 @@ TOF_CoincidenceEvents::~TOF_CoincidenceEvents()
 	reset();
 	if( this==theCoin ) theCoin=nullptr;
 }
+	
+void TOF_CoincidenceEvents::generateHistoForQA()
+{
+	if( !fTreeCoin ){
+		std::cerr << "[TOF_CoincidenceEvents] fTreeCoin does NOT exist." << std::endl;
+		return;
+	}
+
+	if( fTreeCoin->GetEntries()==0 )
+	{
+		std::cerr << "[TOF_CoincidenceEvents] fTreeCoin has 0 entries." << std::endl;
+		return;
+	}
+
+	if( fActiveChannelList.size()!=4 ) {
+		std::cerr << "The number of active channels is not 4. Cannot proceed..Sorry, we are working on developing.." << std::endl;
+		return;
+	}
+
+	uint32_t channel0 = fActiveChannelList.at(0);
+
+	fHisto_dT = new TH1D("h_dT", "Time Diff between Paddles;Asym. time ratio (ns);", 300, -15, 15 );
+	fHisto_NbOfEvt = new TH1D("hNevt", ";Channel;Number of Coincidence events", 128*8, 0, 128*8);
+	fHisto_TvsQcal = new TH2D("hTvsQcal", ";Time diff in clock;", 300, -3, 3, 100, -0.6, 0.6);
+
+	for( int i=0; i<fTreeCoin->GetEntries(); i++ )
+	{
+	  std::sort( vBranch.begin(), vBranch.end(), [](const TOF_CoincidenceChannelInfo& a, const TOF_CoincidenceChannelInfo& b) { return a.channelID < b.channelID; });
+
+		double ttimeBegin[4];
+		double qqdc[4];
+		double qqdc_cal[4];
+	  for( auto ele: vBranch ) 
+		{ 
+	    auto frameID  = ele.frameID  ;
+      auto channelID= (uint32_t) ele.channelID;
+      auto tacID    = ele.tacID    ;
+      auto tCoarse  = ele.tCoarse  ;
+      auto eCoarse  = ele.eCoarse  ;
+      auto tFine    = ele.tFine    ;
+      auto eFine    = ele.eFine    ;
+	    auto timeBegin= ele.timeBegin;
+	    auto timeEnd  = ele.timeEnd  ;
+	    double qdc_cal  = (double) ele.qdc_cal  ;
+
+			auto chanA = channelID-channel0; 
+			auto chanB = chanA%64;
+			auto chanC = chanA/64;
+			auto chanIdx = 2*chanC + chanB;
+			
+			ttimeBegin[chanIdx] = timeBegin;
+			qqdc[chanIdx] = eFine;
+			qqdc_cal[chanIdx] = qdc_cal;
+			//cout << Form( "channelID: %03d, channel idx: %d, (A, B, C)= (%d, %d, %d)", channelID, chanIdx, chanA, chanB, chanC) << endl;
 		
+			fHisto_NbOfEvt->Fill( channelID );
+		}
+
+		//cout << Form("channels: %03d, %03d, %03d, %03d", vBranch->at(0).channelID,  vBranch->at(1).channelID,  vBranch->at(2).channelID,  vBranch->at(3).channelID) << endl;
+
+		double tdiff0 = ttimeBegin[0] - ttimeBegin[1];
+		double tdiff1 = ttimeBegin[2] - ttimeBegin[3];
+		double qCratio0 = (qqdc_cal[0] - qqdc_cal[1])/(qqdc_cal[0] + qqdc_cal[1]);
+		double qCratio1 = (qqdc_cal[2] - qqdc_cal[3])/(qqdc_cal[2] + qqdc_cal[3]);
+
+		double dT = ( (ttimeBegin[0]-ttimeBegin[2]) + (ttimeBegin[1]-ttimeBegin[3]) )/2.0* fTdcClkNs; // ns
+		fHisto_dT->Fill( dT );
+
+		fHisto_TvsQcal->Fill( tdiff0, qCratio0 );
+		fHisto_TvsQcal->Fill( tdiff1, qCratio1 );
+
+		//if( i>100) break;
+	}
+	
+	return;
+}

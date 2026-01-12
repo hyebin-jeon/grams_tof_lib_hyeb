@@ -14,23 +14,33 @@ void tofCoinEvt_20251121()
   auto theAttrib   = TOF_Attributes::getInstance();
 
   auto theCalib    = TOF_TdcQdcCalibration::getInstance();
-	theCalib->readCalibrationFiles( "../calibration/20251217" ); 
+	theCalib->readCalibrationFiles( "../calibration/20260109" ); 
 
 	//const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20251119_extBiasOpt_ethernet/05_6ftGreenPkg_UGreen_PWRonFloor";
-	const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20251217_DistrBoard/20251218";
+	//const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20251217_DistrBoard/20251218";
+	const char* dirName = "~/Box/GRAMS/TOF_MPD/0_TestOutputs/20260109_MergedSoftwareCheck/tofdata/stg1";
 
-	const char* finName = "test_qdc_raw.root";
+	//const char* finName = "test_qdc_raw.root";
+	const char* finName = "run_2026-01-09_23-48-34.104Z.stg1.root";
 	const char* finPath = Form( "%s/%s", dirName, finName );
+
+	const char* pdf_suffix = "_20260109";
+
+	cout << pdf_suffix << endl;
 	
-	const char* pdf_suffix = "_20251218";
-	
-	int qdcmode = -1;
-	if( ((TString) finName).Contains("qdc") ) qdcmode = 1; //qdc
-	else if( ((TString) finName).Contains("tot") ) qdcmode = 0; //tot
-	else return;
+	int qdcmode = 1;
+	//int qdcmode = -1;
+	//if( ((TString) finName).Contains("qdc") ) qdcmode = 1; //qdc
+	//else if( ((TString) finName).Contains("tot") ) qdcmode = 0; //tot
+	//else return;
+	cout << "qdcmode: " << qdcmode << endl;
 
 	const char* mode_suffix = qdcmode==1? "_qdc":"_tot";
-  TString pdfName= Form("output/tofCoinEvt%s%s.pdf", mode_suffix, pdf_suffix );
+	cout << "[0]" << qdcmode << "," << mode_suffix << endl;
+  //TString pdfName= Form("output/tofCoinEvt%s%s.pdf", mode_suffix, pdf_suffix );
+  TString pdfName= Form("output/tofCoinEvt%s.pdf", pdf_suffix );
+
+	cout << "[1]" << pdfName << endl;
 	
 	
 	TFile* fin = new TFile( finPath, "read" );
@@ -42,7 +52,7 @@ void tofCoinEvt_20251121()
 	TOF_TreeData* tD = (TOF_TreeData*) fin->Get("data");
 	if( !tD ) return;
 	//tD->setBranchAddress();
-
+	
  
 	/// ROI channel list
 	uint8_t febD_connID = 4;

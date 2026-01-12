@@ -10,7 +10,7 @@ class TOF_CoincidenceChannelInfo : public TObject
 	public:
 	long long       frameID;
   //unsigned int    channelID;
-  uint32_t    channelID;
+  uint32_t        channelID;
   unsigned short  tacID;
   unsigned short  tCoarse;
   unsigned short  eCoarse;
