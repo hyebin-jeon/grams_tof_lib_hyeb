@@ -396,15 +396,23 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 	fHisto_dT = new TH1D("h_dT", "Time Diff between Paddles;Asym. time ratio (ns);", 300, -15, 15 );
 	fHisto_NbOfEvt = new TH1D("hNevt", ";Channel;Number of Coincidence events", 128*8, 0, 128*8);
 	fHisto_TvsQcal = new TH2D("hTvsQcal", ";Time diff in clock;", 300, -3, 3, 100, -0.6, 0.6);
+		
+	double ttimeBegin[4];
+	double qqdc[4];
+	double qqdc_cal[4];
+
+
+	std::vector<TOF_CoincidenceChannelInfo>* vBranchA = nullptr;
+	fTreeCoin->SetBranchAddress( "coinEvt", &vBranchA );
 
 	for( int i=0; i<fTreeCoin->GetEntries(); i++ )
 	{
-	  std::sort( vBranch.begin(), vBranch.end(), [](const TOF_CoincidenceChannelInfo& a, const TOF_CoincidenceChannelInfo& b) { return a.channelID < b.channelID; });
+		fTreeCoin->GetEntry(i);
 
-		double ttimeBegin[4];
-		double qqdc[4];
-		double qqdc_cal[4];
-	  for( auto ele: vBranch ) 
+	  std::sort( vBranchA->begin(), vBranchA->end(), [](const TOF_CoincidenceChannelInfo& a, const TOF_CoincidenceChannelInfo& b) { return a.channelID < b.channelID; });
+
+		//std::cout << "Number of elements in a branch: " << vBranchA.size() << std::endl;
+	  for( auto ele: *vBranchA ) 
 		{ 
 	    auto frameID  = ele.frameID  ;
       auto channelID= (uint32_t) ele.channelID;
@@ -421,6 +429,8 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 			auto chanB = chanA%64;
 			auto chanC = chanA/64;
 			auto chanIdx = 2*chanC + chanB;
+
+			//std::cout << Form("[%04d] frameID: %lld, channel: %u, channel idx: %d, timeBegin: %4.3f", i, frameID, channelID, chanIdx, timeBegin) << std::endl;
 			
 			ttimeBegin[chanIdx] = timeBegin;
 			qqdc[chanIdx] = eFine;
@@ -430,14 +440,17 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 			fHisto_NbOfEvt->Fill( channelID );
 		}
 
-		//cout << Form("channels: %03d, %03d, %03d, %03d", vBranch->at(0).channelID,  vBranch->at(1).channelID,  vBranch->at(2).channelID,  vBranch->at(3).channelID) << endl;
+		//cout << Form("channels: %03d, %03d, %03d, %03d", vBranchA->at(0).channelID,  vBranchA->at(1).channelID,  vBranchA->at(2).channelID,  vBranchA->at(3).channelID) << endl;
 
 		double tdiff0 = ttimeBegin[0] - ttimeBegin[1];
 		double tdiff1 = ttimeBegin[2] - ttimeBegin[3];
 		double qCratio0 = (qqdc_cal[0] - qqdc_cal[1])/(qqdc_cal[0] + qqdc_cal[1]);
 		double qCratio1 = (qqdc_cal[2] - qqdc_cal[3])/(qqdc_cal[2] + qqdc_cal[3]);
 
+		//std::cout << Form("tdiff0: %4.3f, tdiff1: %4.2f", tdiff0, tdiff1) << std::endl;
+
 		double dT = ( (ttimeBegin[0]-ttimeBegin[2]) + (ttimeBegin[1]-ttimeBegin[3]) )/2.0* fTdcClkNs; // ns
+		//std::cout << Form("time: %4.4f", dT) << std::endl;
 		fHisto_dT->Fill( dT );
 
 		fHisto_TvsQcal->Fill( tdiff0, qCratio0 );
@@ -445,6 +458,14 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 
 		//if( i>100) break;
 	}
+
+	gStyle->SetOptStat(111111);
+	gStyle->SetOptFit(1111);
+	TCanvas* canv00 = new TCanvas("canv00", "canv00");
+	fHisto_dT->Draw();
+	auto theFit = TOF_Fitting::getInstance();
+	theFit->fitGauss( fHisto_dT, 2.5 );
+	canv00->Print("coincidence_dT.png");
 	
 	return;
 }

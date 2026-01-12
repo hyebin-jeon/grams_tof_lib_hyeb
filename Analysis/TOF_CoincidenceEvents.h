@@ -8,9 +8,12 @@
 #include "TSystem.h"
 #include "TH1D.h"
 #include "TH2D.h"
+#include "TCanvas.h"
+#include "TStyle.h"
 #include "TOF_TdcQdcCalibration.h"
 #include "TOF_TreeData.h"
 #include "TOF_CoincidenceChannelInfo.h"
+#include "TOF_Fitting.h"
 
 enum class TOF_QdcCalibMethod {
 	fGetEnergy = 0,
