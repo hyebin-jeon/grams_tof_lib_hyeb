@@ -459,13 +459,32 @@ void TOF_CoincidenceEvents::generateHistoForQA()
 		//if( i>100) break;
 	}
 
+  auto theAttrib   = TOF_Attributes::getInstance();
+
 	gStyle->SetOptStat(111111);
 	gStyle->SetOptFit(1111);
 	TCanvas* canv00 = new TCanvas("canv00", "canv00");
 	fHisto_dT->Draw();
 	auto theFit = TOF_Fitting::getInstance();
 	theFit->fitGauss( fHisto_dT, 2.5 );
+	auto fit = theFit->getFitFunction();
+	theAttrib->drawTextNDC( 0.05, 12, kRed, 0.15, 0.85, Form("t_resol= %.3f ns", fit->GetParameter(2)) );
 	canv00->Print("coincidence_dT.png");
 	
+	gStyle->SetOptStat(111111);
+	gStyle->SetOptFit(0);
+	TCanvas* canv01 = new TCanvas("canv01", "canv01");
+	fHisto_TvsQcal->Draw("colz");
+	gPad->SetGrid();
+	auto correlR = fHisto_TvsQcal->GetCorrelationFactor();
+	theAttrib->drawTextNDC( 0.05, 12, kBlack, 0.15, 0.85, Form("correl= %.2f", correlR) );
+	canv01->Print("coincidence_TvsQcal.png");
+
+	TCanvas* canv02 = new TCanvas("canv02", "canv02");
+	fHisto_NbOfEvt->Draw();
+	gPad->SetGrid();
+	canv02->Print("coincidence_CHvsNbOfEvt.png");
+
+	return;
 	return;
 }
