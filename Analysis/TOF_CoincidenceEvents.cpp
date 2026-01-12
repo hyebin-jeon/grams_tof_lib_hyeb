@@ -356,8 +356,12 @@ void TOF_CoincidenceEvents::reset()
   vTree.clear();
 
 	delete fHisto_dT;
+	delete fHisto_NbOfEvt;
+	delete fHisto_TvsQcal;
 	fHisto_dT = nullptr;
-		
+  fHisto_NbOfEvt = nullptr;
+  fHisto_TvsQcal = nullptr;		
+
 	std::cout << "[TOF_CoincidenceEvents::reset()] Reset Completed" << std::endl;
 };
 
