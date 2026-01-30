@@ -1,5 +1,6 @@
-/// This code assumes that the number of 
-	
+/// Last updated on 20260129
+
+
 void tofCoinEvt_20260125_verKS(
 	const char* finPath      = "../data/20260122/run_2026-01-22_22-22-37.717Z.stg1.root", 
 	const char* foutPathBase = "./output/tofCoinEvt_20260125_verKS", int qdcmode = 1, 
