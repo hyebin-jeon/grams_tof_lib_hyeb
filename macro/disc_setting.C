@@ -1,3 +1,5 @@
+/// Last updated on 20260129
+/// Generate a user's disc_setting.tsv based on the discriminator calibration result
 
 void disc_setting( 
 		const char* finName = "/Users/hjeon7/Library/CloudStorage/Box-Box/GRAMS/TOF_MPD/0_TestOutputs/20260122_PulseTests/tofdata_20260126/disc/disc_calibration_2026-01-22_20-55-11.590Z.tsv",
@@ -72,6 +74,7 @@ void disc_setting(
 		auto achanID = 131072*portID + 4096*slaveID + 64*chipID + channelID;
 		//cout << Form("[%03d] %2u, %2u, %2u, %03hu, %2d, %2d, %3.4f, %3.4f, %3.4f, %3.4f, %3.4f, %3.4f", lineN, portID, slaveID, chipID, channelID, baseT, baseE, zeroT1, zeroT2, zeroE, noiseT1, noiseT2, noiseE ) << endl;
 
+		/// threshold = mean - 1 sigma (in DAC) - note that higher thresold voltage with smaller DAC
 		vth_t1 = zeroT1 - noiseT1;
 		vth_t2 = zeroT2 - noiseT2;
 		vth_e  = zeroE  - noiseE;
