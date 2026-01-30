@@ -24,3 +24,5 @@ CMakeUserPresets.json
 /calibration/
 /Analysis_old/
 /Analysis/*.org
+/data/
+
