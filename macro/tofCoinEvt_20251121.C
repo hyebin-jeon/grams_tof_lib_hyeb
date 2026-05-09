@@ -108,7 +108,7 @@ void tofCoinEvt_20251121()
 		double tot_bin  = 100;
 		double tot_xmin = 50;
 		double tot_xmax = 70;
-		hTotC[i] = new TH1D( Form("hTotC_ch%03d"  , activeChannels.at(i)), "", tot_bin, tot_xmin, tot_xmax ); // using eCoarse
+		hTotC[i] = new TH1D( Form("hTotC_ch%03d"  , activeChannels.at(i)), "", tot_bin, tot_xmin, tot_xmax ); // using eCoarse. tEnd - tBegin
 		hTotF[i] = new TH1D( Form("hTotF_ch%03d"  , activeChannels.at(i)), "", tot_bin, tot_xmin, tot_xmax ); // using fine-tuned
 
 		double qdc_bin  = 200;

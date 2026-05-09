@@ -2,27 +2,25 @@
 
 
 void tofCoinEvt_20260125_verKS(
-	const char* finPath      = "../data/20260122/run_2026-01-22_22-22-37.717Z.stg1.root", 
-	const char* foutPathBase = "./output/tofCoinEvt_20260125_verKS", int qdcmode = 1, 
+	//const char* finPath      = "../data/20260122/run_2026-01-22_22-22-37.717Z.stg1.root", 
+	//const char* foutPathBase = "./output/tofCoinEvt_20260125_verKS", int qdcmode = 1, 
+	//const char* tdcCalibPath = "../calibration/20260122/tdc_calibration_2026-01-22_21-03-10.916Z.tsv", 
+	//const char* qdcCalibPath = "../calibration/20260122/qdc_calibration_2026-01-22_21-07-30.19Z.tsv"
+	const char* finPath      = "/Users/hjeon7/Library/CloudStorage/Box-Box/GRAMS/TOF_MPD/0_TestOutputs/20260130_pulse_tofdata/stg1/run_2026-01-30_22-54-05.682Z.stg1.root",
+	const char* foutPathBase = "./output", int qdcmode = 1, 
 	const char* tdcCalibPath = "../calibration/20260122/tdc_calibration_2026-01-22_21-03-10.916Z.tsv", 
 	const char* qdcCalibPath = "../calibration/20260122/qdc_calibration_2026-01-22_21-07-30.19Z.tsv"
 	)
 {
 
+	bool kRunCoincidence = true ; // for sipm
+	//bool kRunCoincidence = false; // for pulse only
+
+
   if (TString(finPath).IsWhitespace() || TString(foutPathBase).IsWhitespace()) {
 		printf("[ERR] Usage: .x tofCoinEvt_20251121.C(\"/abs/path/in.root\", \"/abs/path/out_base\")\n");
 		return;
 	}
-
-  /// warm up ///
-  //gROOT->SetBatch(kTRUE);
-  //TF1 *f_warmup = new TF1("warmup", "gaus", 0, 1);
-  //delete f_warmup;
-  //TCanvas *c_warmup = new TCanvas("c_warmup", "warmup");
-  //c_warmup->Print("warmup_init.pdf");
-  //delete c_warmup;
-  //gSystem->Unlink("warmup_init.pdf"); // Remove the dummy file
-
 
 	/// Class setup
 	TOF_CoincidenceEvents* theCoin = new TOF_CoincidenceEvents();
@@ -49,11 +47,6 @@ void tofCoinEvt_20260125_verKS(
   theCalib->readTdcCalib(tdcPath);
   theCalib->readQdcCalib(qdcPath);
 
-	cout << foutPathBase << endl;
-
-  TString pdfName  = Form("%s.pdf",  foutPathBase);
-	TString rootName = Form("%s.root", foutPathBase);
-	
 
 	/// ROI channel list
 	uint8_t febD_connID = 4; // connector ID on FEB/D. range [1,8].
@@ -74,18 +67,27 @@ void tofCoinEvt_20260125_verKS(
 	cout << "-------------------------------" << endl;
 	auto theConvStg = TOF_ConvertStg1toStg2::getInstance();
 	theConvStg->convertStg1ToStg2( finPath ); // default
-	//theConvStg->convertStg1ToStg2( finPath, "output/timestamp.stg2.root" ); // specify output file name
+	//theConvStg->convertStg1ToStg2( finPath, "output/timestamp.stg2.root" ); // when specify output file name
+	
+
+	if( !kRunCoincidence ) return;
 
 	/// Find coincidence events ///
 	cout << "-------------------------------" << endl;
 	cout << "Coincidence events" << endl;
 	cout << "-------------------------------" << endl;
-	auto fpathStg2 =  theConvStg->getStg2()->getFilePath();
-	theCoin->setInputPathStg2( Form("%s", fpathStg2.c_str()) );
+	TString fpathStg2 =  theConvStg->getStg2()->getFilePath();
+	theCoin->setInputPathStg2( Form("%s", fpathStg2.Data()) );
 
+	TString fnameStg2 =  theCoin->fStg2->getFileName();
+	TString fname = fnameStg2(0,  fnameStg2.Index(".root") );
+
+  TString pdfName  = Form("%s/%s.coin.pdf" , foutPathBase, fname.Data() );
+	TString rootName = Form("%s/%s.coin.root", foutPathBase, fname.Data() );
+	
 	/// class setup
 	theCoin->setActiveChannels( activeChannels );
-	
+
 	TFile *fout = new TFile(rootName, "recreate" );
 	//theCoin->setQdcCalibMethod( TOF_QdcCalibMethod::fGetEnergy );
 	auto tC = theCoin->getCoincidenceEventsTree();
